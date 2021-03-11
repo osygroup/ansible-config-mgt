@@ -1,0 +1,16 @@
+[nfs]
+10.0.0.4 
+
+[webservers]
+10.0.0.6 ansible_user=azureuser ansible_ssh_private_key_file=~/.ssh/NoPassphrase
+10.0.0.7 
+10.0.0.8 
+
+[db]
+10.0.0.5 ansible_user=azureuser
+
+[jenkins]
+10.0.0.9 ansible_user=azureuser ansible_ssh_private_key_file=~/.ssh/NoPassphrase
+
+[lb]
+10.0.0.11 ansible_user=azureuser
