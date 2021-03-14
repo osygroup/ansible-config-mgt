@@ -23,6 +23,9 @@ rapidly rising to the top in the world of automation tools.
 In this project, we will create a Bastion server to run Ansible scripts
 on the servers in the Tooling Website architecture.
 
+## Prerequisite
+Completion of Load-Balancer-Solution-with-Nginx-and-SSL-TLS (Project 3)
+
 ## Step 1 - Create a GitHub repository
 
 Create a new GitHub repository named *ansible-config-mgt*. In the
