@@ -1,4 +1,4 @@
-Ansible Configuration Management - Automate Project 7 to 10
+# Ansible Configuration Management - Automate Project 7 to 10
 
 A Bastion host/server is an intermediary server through which access to
 internal network can be achieved. A bastion host is a server whose
@@ -23,14 +23,14 @@ rapidly rising to the top in the world of automation tools.
 In this project, we will create a Bastion server to run Ansible scripts
 on the servers in the Tooling Website architecture.
 
-Step 1 - Create a GitHub repository
+## Step 1 - Create a GitHub repository
 
 Create a new GitHub repository named *ansible-config-mgt*. In the
 repository, create a branch named *feature-001*:
 
 ![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image1.jpeg)
 
-Step 2 - Prepare a Jump/Bastion server to act as Ansible Client
+## Step 2 - Prepare a Jump/Bastion server to act as Ansible Client
 
 Create an Ubuntu 20.04 LTS server and call it Bastion. It will serve as
 a client to run ansible scripts.
@@ -170,7 +170,7 @@ file with a 'ping' test that returns 'pong' if successful:
 
 ![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image4.jpeg)
 
-Step 3 -- Test Ansible with a Playbook
+## Step 3 -- Test Ansible with a Playbook
 
 Open the Ansible playbook *common.yml* with a text editor:
 
@@ -223,7 +223,7 @@ To connect Visual Studio Code to the Bastion server for creating and
 editing playbooks and inventories, follow the instructions in this
 [documentation](https://code.visualstudio.com/docs/remote/ssh).
 
-Step 4 - Push Ansible files to GitHub repository
+## Step 4 - Push Ansible files to GitHub repository
 
 Install Git in the Bastion server:
 
@@ -305,7 +305,7 @@ For example:
 *\$ sudo git pull https://github.com/osygroup/ansible-config-mgt
 feature-001 \--rebase*
 
-Step 5 -- Create Pull Request (PR)
+## Step 5 -- Create Pull Request (PR)
 
 Pull requests let you tell others about changes you\'ve pushed to a
 branch in a repository on GitHub. Once a pull request is opened, you can
@@ -351,7 +351,7 @@ To view the files in the branch:
 
 ![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image17.png)
 
-Conclusion
+## Conclusion
 
 A bastion host is a standard element of network security that provides
 secure access to private networks over SSH.
@@ -377,7 +377,7 @@ Some of the advantages of Ansible are:
 
 -   Usable as non-root.
 
-Credits
+## Credits
 
 <https://stackoverflow.com/questions/32297456/how-to-ignore-ansible-ssh-authenticity-checking>
 
