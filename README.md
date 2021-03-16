@@ -1,6 +1,6 @@
 # Project 4: Bastion Host & Ansible Configuration Management
 
-A Bastion host/server is an intermediary server through which access to
+A Bastion host/server is an intermediary server through which access to an
 internal network can be achieved. A bastion host is a server whose
 purpose is to provide access to a private network from an external
 network, such as the Internet. Because of its exposure to potential
