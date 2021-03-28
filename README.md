@@ -1,395 +1,446 @@
-# Project 4: Bastion Host & Ansible Configuration Management
+# Project 5: Ansible Refactoring & Static Assignments (Imports)
 
-A Bastion host/server is an intermediary server through which access to an
-internal network can be achieved. A bastion host is a server whose
-purpose is to provide access to a private network from an external
-network, such as the Internet. Because of its exposure to potential
-attack, a bastion host must minimize the chances of penetration. For
-example, you can use a bastion host to mitigate the risk of allowing SSH
-connections from an external network to the Linux instances launched in
-a private subnet of a virtual network or private cloud.
+Refactoring is a general term in software programming. It means making
+changes to the source code without any change to the external behaviour
+of the solution.
 
-Ansible is an open-source automation tool, or platform, used for IT
-tasks such as configuration management, application deployment,
-intraservice orchestration, and provisioning. Automation is crucial
-these days, with IT environments that are too complex and often need to
-scale too quickly for system administrators and developers to keep up if
-they had to do everything manually. Automation simplifies complex tasks,
-not just making developers' jobs more manageable but allowing them to
-focus attention on other tasks that add value to an organization. In
-other words, it frees up time and increases efficiency. And Ansible is
-rapidly rising to the top in the world of automation tools.
+In Ansible, using roles is the best way to refactor source codes or
+artifacts. Similar tasks that are done very often e.g. managing user
+accounts, installing and configuring a web server or database can be
+abstracted into Ansible roles. This means a set of tasks can be
+maintained to be used among many playbooks, with variables to give
+flexibility where needed.
 
-In this project, we will create a Bastion server to run Ansible scripts
-on the servers in the Tooling Website architecture.
+In this project, we will create a new virtual machine to be used as a
+webserver to illustrate using Ansible to deploy a webserver for the
+tooling application.
 
-## Prerequisite
-Completion of Load-Balancer-Solution-with-Nginx-and-SSL-TLS (Project 3)
+### Prerequisite
 
-## Step 1 - Create a GitHub repository
+Completion of Bastion Host & Ansible Configuration Management (Project 4)
 
-Create a new GitHub repository named *ansible-config-mgt*. In the
-repository, create a branch named *feature-001*:
+### Step 1 - Create a new webserver and pull Ansible files from GitHub
+repository
 
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image1.jpeg)
+Create a new RHEL 8 virtual machine in the same virtual network as the
+other servers in the architecture and add its private IP address to the
+*inventory/dev* list in the Ansible host:
 
-## Step 2 - Prepare a Jump/Bastion server to act as Ansible Client
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image1.png)
 
-Create an Ubuntu 20.04 LTS server and call it Bastion. It will serve as
-a client to run ansible scripts.
+Pull down the latest code from master/main branch, and create a new
+branch (named something like *refactor*)
 
-On the bastion server install Ansible:
+Move into the git repository and check the branch that is currently
+selected
 
-*\$ sudo apt update*
+*\$ sudo git branch*
 
-*\$ sudo apt install ansible*
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image2.png)
 
-Check Ansible version:
+Pull the remote main branch into the local main branch
 
-*\$ ansible --version*
+*\$ sudo git pull remote main*
 
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image2.jpeg)
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image3.png)
 
-Create a folder named *ansible*:
+Create a new branch named *refactor* and switch to it immediately:
 
-*\$ sudo mkdir ansible*
+*\$ sudo git checkout -b refactor*
 
-For VS Code to edit files in the Ansible directory,
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image4.png)
 
-*\$ sudo chown -R azureuser: ansible*
+A new branch is created with the contents of the master/main branch.
+View the contents of the *refactor* branch.
 
-Create a directory named *playbooks*. This will be used to store all the
-playbook files:
+*\$ sudo git ls-tree -r \--name-only refactor*
 
-*\$ sudo mkdir ansible/playbooks*
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image5.png)
 
-Create a directory named *inventory*. This will be used to keep the host
-servers organized:
+Within the *playbook* folder, create a new file and name it *site.yml* -
+This will now be considered as the entry point into the entire
+infrastructure configuration. Other playbooks will be included here as a
+reference. In other words, *site.yml* will become a parent to all other
+playbooks that will be developed, including *common.yml* that was
+created previously.
 
-*\$ sudo mkdir ansible/inventory*
+Create a new folder and name it *static-assignments*. This folder is
+where all other dynamic playbooks will be stored. This is merely for
+easy organization of work. It is not an Ansible specific concept.
 
-Within the *playbooks* folder, create a playbook, and name it
-*common.yml*
+Move the *common.yml* file into the newly created *static-assignments*
+folder.
 
-*\$ sudo touch ansible/playbooks/common.yml*
+Edit the *hosts* field to:
 
-Within the inventory folder, create an inventory file for each
-environment (Development, Staging, Testing and Production) *dev*,
-*staging*, *uat*, and *prod* respectively.
+*hosts: \"{{ hostlist }}\"*
 
-*\$ sudo touch ansible/inventory/dev*
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image6.png)
 
-*\$ sudo touch ansible/inventory/staging*
+Within the *site.yml* file, import the *common.yml* playbook.
 
-*\$ sudo touch ansible/inventory/uat*
-
-*\$ sudo touch ansible/inventory/prod*
-
-Open the *dev* file with an editor and place the below inventory
-structure file to start configuring the development servers (ensure to
-replace the IP addresses according to your own setup):
-
-\[nfs\]
-
-10.0.0.4
-
-\[webservers\]
-
-10.0.0.6
-
-10.0.0.7
-
-10.0.0.8
-
-\[db\]
-
-10.0.0.5
-
-\[jenkins\]
-
-10.0.0.9
-
-\[lb\]
-
-10.0.0.11
-
-The above inventory structure will work if the username of the nodes
-(servers) in the inventory are the same as the username of the Ansible
-host (Bastion server). Ansible would attempt to connect to the servers
-using the Bastion server\'s username.
-
-Attach the username of the server if it is a different name from the
-Bastion server's name. The IP entry for a server with a different
-username will look like:
-
-10.0.0.11 ansible_user=\<username\>
-
-For example:
-
-10.0.0.11 ansible_user=ubuntu
-
-Also, the above inventory structure will work if all the servers in the
-inventory use the same *.ssh/id_rsa* SSH private key in the Bastion
-server. Ansible would attempt to connect to the remote servers using the
-*id_rsa* private key in its *.ssh* folder.
-
-Attach the name of the private SSH key of the server (including its file
-path) if it has a different key from the *id_rsa* key in the Bastion
-server. The IP entry for a server with a different private SSH key will
-look like:
-
-10.0.0.9 ansible_ssh_private_key_file=/*file_path*/\<*private_key*\>
-
-For example:
-
-10.0.0.9 ansible_ssh_private_key_file=\~/.ssh/privatekey
-
-If a server has a different username from the Bastion server and a
-different SSH private key from the *id_rsa* key in the Bastion server,
-the IP entry for that server will look like:
-
-10.0.0.6 ansible_user=myuser
-ansible_ssh_private_key_file=\~/.ssh/myprivatekey
-
-Change the file permission of the private key(s) to be used to connect
-to the servers from the Ansible host to limit access:
-
-*\$ sudo chmod 400 \~/.ssh/id_rsa*
-
-Disable Authenticity of host (Host key checking) in
-/etc/ansible/ansible.cfg. Type in a new line:
-
-*host_key_checking = False*
-
-Or scroll down the config file and uncomment the line
-*\#host_key_checking = False*
-
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image3.jpeg)
-
-Test connection to the servers in the development servers in the *dev*
-file with a 'ping' test that returns 'pong' if successful:
-
-\$ ansible all -i ansible/inventory/dev -m ping
-
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image4.jpeg)
-
-## Step 3 -- Test Ansible with a Playbook
-
-Open the Ansible playbook *common.yml* with a text editor:
-
-*\$ sudo nano ansible/playbooks/common.yml*
-
-Below is a playbook to install *git* in all the servers in the *dev*
-inventory file. Copy and insert it into the *common.yml* file.
+Edit the *site.yml* file with a text editor and paste the following
+inside:
 
 *\-\--*
 
-*- name: test*
+*- name: Install Git*
 
-*hosts: all*
+*import_playbook: ../static-assignments/common.yml
+hostlist=webserver-ansible*
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image7.png)
+
+The '*hostlist=webserver-ansible*' will ensure that the *site.yml*
+playbook will run the *common.*yml playbook only on the new
+webserver-ansible virtual machine. To run the playbook on all the
+servers, '*hostlist=all*'.
+
+### Step 2 -- Create and Configure Roles
+
+The tasks to configure the webserver can be written within another
+playbook, but that will make reusing the playbook difficult. A dedicated
+role is needed to organize Ansible neatly.
+
+To create a role, first, create a directory named *roles* in the parent
+*ansible* folder. Roles have specific folder structure which can be
+manually created. But, rather than doing the hard work, there is a
+smarter way to do that by using an ansible utility called
+*ansible-galaxy*. Run the code below within the *roles* folder just
+created.
+
+*\$ sudo ansible-galaxy init webserver*
+
+This will create all the folders and files needed to develop a role. The
+entire folder structure should look like this:
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image8.png)
+
+Most of the files and folders are not required yet, so remove *tests*,
+*files*, and *vars*. The folder structure should now look like this:
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image9.png)
+
+Go into *defaults* directory, and within the *main.yml* file, create
+some variables so that this role can be easily reusable. Copy and paste
+the following variables into the *main.yml* file:
+
+*\#configuration file name*
+
+*ap_http_conf_file: \"tooling.conf\"*
+
+*\#port for webserver*
+
+*ap_http_port: 80*
+
+*\#location of app folder to be deployed (it is on the Ansible host)*
+
+*ap_source_code_location: \"/home/azureuser/tooling/html\"*
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image10.png)
+
+Go into *templates* directory and create a config file to configure a
+new virtual host for the tooling app. The config file will be saved as a
+Jinja 2 template file e.g. *tooling.conf.j2*. Copy the below
+configuration into the *.conf.j2* file created.
+
+*\<VirtualHost \*:{{ap_http_port}}\>*
+
+*DocumentRoot /var/www/html*
+
+*\</VirtualHost\>*
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image11.png)
+
+Go into *tasks* directory, and within the *main.yml* file, start writing
+the configuration to install Apache server and deploy the tooling app's
+html folder into the webserver's */var/www* directory.
+
+Copy and paste the following into the *main.yml* file:
+
+*- name: Install apache*
+
+*package:*
+
+*name: httpd*
+
+*state: present*
+
+*- name: create /var/www folder if it does not exist*
+
+*file:*
+
+*path: /var/www*
+
+*state: directory*
+
+*mode: \'0755\'*
+
+*- name: Copy source code/artifacts*
+
+*copy:*
+
+*src: \"{{ ap_source_code_location }}\"*
+
+*dest: /var/www/*
+
+*- name: Set up Apache VirtualHost*
+
+*template:*
+
+*src: \"tooling.conf.j2\"*
+
+*dest: \"/etc/httpd/conf.d/{{ ap_http_conf_file }}\"*
+
+*- name: Enable Httpd*
+
+*service:*
+
+*name: \"httpd\"*
+
+*enabled: yes*
+
+*- name: Start Httpd*
+
+*service:*
+
+*name: \"httpd\"*
+
+*state: started*
+
+*- name: Stop firewall*
+
+*shell: systemctl stop firewalld*
+
+*- name: Disable firewall*
+
+*shell: systemctl disable firewalld*
+
+*- name: Mask firewall*
+
+*shell: sudo systemctl mask \--now firewalld*
+
+Create another role in the *roles* folder for installing PHP and all the
+necessary modules.
+
+*\$ sudo ansible-galaxy init php-rhel*
+
+Only the *tasks* directory will be configured for this role. Edit its
+*main.yml* file and add the following PHP 8.0 installation
+configuration.
+
+*- name: Install PHP 8.0 in RHEL*
+
+*shell: dnf install -y
+https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm*
+
+*- name: Step 2*
+
+*shell: dnf install -y
+http://rpms.remirepo.net/enterprise/remi-release-8.rpm*
+
+*- name: Step 3*
+
+*shell: dnf module reset php*
+
+*- name: Step 4*
+
+*shell: dnf module install -y php:remi-8.0*
+
+*- name: Step 5*
+
+*shell: dnf install -y
+php-{mysqlnd,xml,xmlrpc,curl,gd,imagick,mbstring,opcache,soap,zip}*
+
+*- name: Restart Httpd*
+
+*shell: systemctl restart httpd*
+
+Ansible uses a configuration file to customize settings. The file is
+*ansible.cfg* file. It can be located anywhere, but it must be exported
+as an environmental variable to let Ansible know where to find this
+file.
+
+Create a new file in the *roles* directory and name it *ansible.cfg* and
+update it with the below content, specifying the full path to the roles.
+If this is not done, any role you download through galaxy will be
+installed in the default settings which could either be in
+/etc/ansible/ansible.cfg or \~/.ansible.cfg
+
+*\[defaults\]*
+
+*timeout = 160*
+
+*roles_path = \<FULL PATH TO ANSIBLE ROLES\>*
+
+*callback_whitelist = profile_tasks*
+
+*log_path=\~/ansible.log*
+
+*host_key_checking = False*
+
+*gathering = smart*
+
+*\[ssh_connection\]*
+
+*ssh_args = -o ControlMaster=auto -o ControlPersist=30m -o
+ControlPath=/tmp/ansible-ssh-%h-%p-%r -o ServerAliveInterval=60 -o
+ServerAliveCountMax=60*
+
+*\[privilege_escalation\]*
+
+*become=True*
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image12.png)
+
+Run the export command on the terminal to let Ansible know where to find
+the configuration file.
+
+*\$ export ANSIBLE_CONFIG=\<full_path_to_ansible.cfg_file\>*
+
+Once this is exported, all the roles will be activated.
+
+Now check if the two roles were activated and are ready to be used.
+
+*\$ ansible-galaxy role list*
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image13.png)
+
+Navigate back to the *static-assignments* directory and create a new
+playbook for the webserver role named *webservers.yml*. This is where
+the webserver role will be referenced.
+
+*\-\--*
+
+*- name: set up tooling webserver*
+
+*hosts: \"{{ hostlist }}\"*
+
+*roles:*
+
+*- webserver*
+
+*become: true*
+
+Also create a new playbook for the php-rhel role named *php-rhel.yml*.
+
+*\-\--*
+
+*- name: set up tooling webserver*
+
+*hosts: \"{{ hostlist }}\"*
+
+*roles:*
+
+*- php-rhel*
+
+*become: true*
+
+Since the roles will be run on a new RHEL virtual machine, create a
+playbook for updating the virtual machine and disabling SELinux.
+
+Add the below tasks into the playbook named *update.yml*:
+
+*\-\--*
+
+*- name: Update server and disable SELinux*
+
+*hosts: \"{{ hostlist }}\"*
 
 *become: true*
 
 *tasks:*
 
-*- name: install git*
+*- name: Update server*
 
 *package:*
 
-*name: git*
+*name: \'\*\'*
 
 *state: latest*
 
-Save the playbook and install *git* in all the servers:
+*update_only: yes*
+
+*- name: disable SELinux*
+
+*shell: setenforce 0*
+
+*- name: setsebool for NFS*
+
+*shell: setsebool -P httpd_use_nfs=1*
+
+Remember that the entry point to the Ansible configuration is the
+*site.yml* file in the *playbooks* directory. Without updating the entry
+point, all the playbooks in the *static-assignments* directory will not
+be used.
+
+The updated *site.yml* file would look like this:
+
+*\-\--*
+
+*- name: Update server, disable firewall and disable SELinux*
+
+*import_playbook: ../static-assignments/update.yml
+hostlist=webserver-ansible*
+
+*- name: Install Git*
+
+*import_playbook: ../static-assignments/common.yml
+hostlist=webserver-ansible*
+
+*- name: Set up tooling webserver*
+
+*import_playbook: ../static-assignments/webservers.yml
+hostlist=webserver-ansible*
+
+*- name: Install RHEL PHP*
+
+*import_playbook: ../static-assignments/php-rhel.yml
+hostlist=webserver-ansible*
+
+Now run the playbook from the root of the Ansible directory:
 
 *\$* *ansible-playbook -i ansible/inventory/dev
-ansible/playbooks/common.yml*
+ansible/playbooks/site.yml*
 
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image5.jpeg)
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image14.png)
 
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image6.jpeg)
+Curl the private IP address of the webserver to confirm that the tooling
+website was deployed:
 
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image7.jpeg)
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image15.png)
 
-As seen in the first screenshot, Ansible 2.5 and above work with Python
-3. Ansible will automatically detect and use Python 3 on many platforms
-that ship with it. Set the python version to python3 on any server with
-python deprecation warning.
+Head over to a web browser and type in the public IP address of the
+webserver to view the tooling website:
 
-In the last screenshot, \'changed=0\' in the PLAY RECAP for a server
-means that the module to be installed in the task (*git*) is already
-installed and therefore there was no changes made, while \'changed=1\'
-in the PLAY RECAP for a server means that the *git* module in the task
-was successfully installed.
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image16.png)
 
-To connect Visual Studio Code to the Bastion server for creating and
-editing playbooks and inventories, follow the instructions in this
-[documentation](https://code.visualstudio.com/docs/remote/ssh).
+### Conclusion
 
-## Step 4 - Push Ansible files to GitHub repository
+Ansible refactoring allows us to hide complexity and to provide defined
+interfaces. It also increases the ability to work in parallel on
+different parts of your Infrastructure as Code (IaC) project.
 
-Install Git in the Bastion server:
+### Credits
 
-*\$ sudo apt install git*
+<https://medium.com/faun/ansible-write-ansible-role-to-configure-apache-webserver-9c08aaf66528>
 
-Change directory into the *ansible* directory and start a local git
-repository:
+<https://docs.ansible.com/ansible/latest/collections/ansible/builtin/copy_module.html>
 
-*\$ cd ansible && sudo git init*
+<https://www.mydailytutorials.com/how-to-copy-files-and-directories-in-ansible-using-copy-and-fetch-modules/>
 
-Add the *inventory* and *playbook* directories to the repository
+<https://stackoverflow.com/questions/62392584/ansible-to-check-particular-directory-exists-if-not-create-it>
 
-*\$ sudo git add inventory*
+<https://stackoverflow.com/a/63668940>
 
-*\$ sudo git add playbooks*
+<https://docs.ansible.com/ansible/latest/collections/ansible/builtin/yum_module.html>
 
-Commit the added repositories
+<https://docs.ansible.com/ansible/2.5/modules/yum_module.html>
 
-*\$ sudo git commit -m \"first commit\"*
+<https://serverfault.com/a/1051530>
 
-Rename the \"master\" branch in the local Git repository to "main":
+<https://blog.programster.org/ansible-update-and-reboot-if-required-amazon-linux-servers>
 
-*\$ sudo git branch -m main*
+<https://www.educba.com/ansible-yum-module/>
 
-Create a new branch *feature-001* (same name with the branch created in
-the GitHub repository) and checkout into it:
-
-*\$ sudo git checkout -b feature-001*
-
-Files can be created in the *ansible* directory and changes can be made
-to files in *inventory* and *playbooks* directories. To check for
-changes to add and commit in the current branch (*feature-001*), run:
-
-*\$ sudo git status*
-
-If there are files in red colour, they are yet to be added to the
-branch. If there are files in green colour, they are yet to be
-committed. Add the necessary files/folders and commit them.
-
-*\$ sudo git add \<file\>*
-
-*\$ sudo git commit -m \"comment here\"*
-
-Confirm if there is anything left to add and commit:
-
-*\$ sudo git status*
-
-To view the files in the branch:
-
-*\$ git ls-tree -r \--name-only feature-001*
-
-Add a remote repository (in this case, the repository created in
-GitHub):
-
-*\$ sudo git remote add origin
-https://github.com/osygroup/ansible-config-mgt.git*
-
-Push the local *feature-001* branch to the remote *feature-001* branch:
-
-*\$ sudo git push -u origin feature-001*
-
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image8.jpeg)
-
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image9.jpeg)
-
-In case there are issues with pushing to the remote GitHub branch, pull
-first from the remote branch, then push back to the remote branch.
-
-To pull from GitHub:
-
-*\$ git pull \<remote\> \<branch\>*
-
-Or:
-
-*\$ git pull \<remote\> \<branch\> \--rebase*
-
-For example:
-
-*\$ sudo git pull https://github.com/osygroup/ansible-config-mgt
-feature-001 \--rebase*
-
-## Step 5 -- Create Pull Request (PR)
-
-Pull requests let you tell others about changes you\'ve pushed to a
-branch in a repository on GitHub. Once a pull request is opened, you can
-discuss and review the potential changes with collaborators and add
-follow-up commits before your changes are merged into the base (*main*)
-branch.
-
-After successfully pushing to the GitHub *feature-001* branch, create a
-pull request to merge the f*eature-001* branch to the *main* branch:
-
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image10.jpeg)
-
-You can add a comment to the pull request before creating it.
-
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image11.png)
-
-Act as a reviewer and review the pull request of the new feature
-development.
-
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image12.jpeg)
-
-Merge the code to the *main* branch and close the pull request:
-
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image13.jpeg)
-
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image14.jpeg)
-
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image15.jpeg)
-
-Back to the Bastion server, switch to the local *main* branch:
-
-*\$ sudo git checkout main*
-
-Pull the remote *main* branch into the local *main* branch
-
-*\$ sudo git pull https://github.com/osygroup/ansible-config-mgt main*
-
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image16.jpeg)
-
-To view the files in the branch:
-
-*\$ sudo git ls-tree -r \--name-only main*
-
-![](https://github.com/osygroup/Images/blob/main/Bastion-Ansible-Demo/image17.png)
-
-## Conclusion
-
-A bastion host is a standard element of network security that provides
-secure access to private networks over SSH.
-
-Some of the advantages of Ansible are:
-
--   Dead-simple setup process with a minimal learning curve.
-
--   Manage machines very quickly and in parallel.
-
--   Avoid custom-agents and additional open ports, be agentless by
-    leveraging the existing SSH daemon.
-
--   Describes infrastructure in a language that is both machine and
-    human friendly.
-
--   Focus on security and easy auditability/review/rewriting of content.
-
--   Manage new remote machines instantly, without bootstrapping any
-    software.
-
--   Allows module development in any dynamic language, not just Python.
-
--   Usable as non-root.
-
-## Credits
-
-<https://stackoverflow.com/questions/32297456/how-to-ignore-ansible-ssh-authenticity-checking>
-
-<https://requestmetrics.com/building/episode-3_5-basic-ansible-with-ssh-keys>
-
-<https://zepel.io/blog/how-to-merge-branches-in-github/>
-
-<https://aws.amazon.com/blogs/security/how-to-record-ssh-sessions-established-through-a-bastion-host/>
-
-<https://www.simplilearn.com/tutorials/ansible-tutorial/what-is-ansible>
-
-<https://github.com/ansible/ansible>
+<https://opensource.com/article/20/1/ansible-playbooks-lessons>
