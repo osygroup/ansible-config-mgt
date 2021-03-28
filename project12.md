@@ -433,9 +433,6 @@ different parts of your Infrastructure as Code (IaC) project.
 
 <https://docs.ansible.com/ansible/2.5/modules/yum_module.html>
 
-![branches](https://user-images.githubusercontent.com/46828049/112753270-8a20af00-8f9c-11eb-8c48-a9cf79481ea7.JPG)
-
-
 <https://serverfault.com/a/1051530>
 
 <https://blog.programster.org/ansible-update-and-reboot-if-required-amazon-linux-servers>
