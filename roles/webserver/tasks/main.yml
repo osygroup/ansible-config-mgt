@@ -1,0 +1,44 @@
+---
+# tasks file for webserver
+
+- name: Install apache
+  package:
+      name: httpd
+      state: present 
+
+- name: create /var/www folder if it does not exist
+  file:
+    path: /var/www
+    state: directory
+    mode: '0755'
+
+- name: Copy source code/artifacts
+  copy:
+       src: "{{ ap_source_code_location }}"
+       dest: /var/www/
+
+- name: Set up Apache VirtualHost
+  template:
+      src: "tooling.conf.j2"
+      dest: "/etc/httpd/conf.d/{{ ap_http_conf_file }}"
+
+- name: Enable Httpd
+  service:
+    name: "httpd"
+    enabled: yes
+
+- name: Start Httpd
+  service:
+    name: "httpd"
+    state: started
+
+- name: Stop firewall
+  shell: systemctl stop firewalld
+
+- name: Disable firewall
+  shell: systemctl disable firewalld
+
+- name: Mask firewall
+  shell: sudo systemctl mask --now firewalld
+
+

@@ -1,0 +1,6 @@
+---
+- name: set up tooling webserver
+  hosts: "{{ hostlist }}"
+  roles:
+     - php-rhel
+  become: true

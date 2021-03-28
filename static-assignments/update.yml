@@ -1,0 +1,15 @@
+---
+- name: Update server and disable SELinux
+  hosts: "{{ hostlist }}"
+  become: true
+  tasks:
+    - name: Update server
+      package:
+        name: '*'
+        state: latest
+        update_only: yes
+        
+    - name: disable SELinux
+      shell: setenforce 0
+    - name: setsebool for NFS
+      shell: setsebool -P httpd_use_nfs=1 

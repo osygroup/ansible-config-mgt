@@ -1,0 +1,6 @@
+---
+- name: set up tooling webserver
+  hosts: "{{ hostlist }}"
+  roles:
+     - webserver
+  become: true

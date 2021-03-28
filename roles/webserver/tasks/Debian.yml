@@ -1,0 +1,40 @@
+# tasks/Debian.yml
+
+- name: Install apache
+  package:
+      name: apache2
+      state: present 
+
+- name: create /var/www folder if it does not exist
+  file:
+    path: /var/www
+    state: directory
+    mode: '0755'
+
+- name: Copy source code/artifacts
+  copy:
+       src: "{{ ap_source_code_location }}"
+       dest: /var/www/
+
+- name: Set up Apache VirtualHost
+  template:
+      src: "tooling.conf.j2"
+      dest: "/etc/apache2/sites-available/{{ ap_http_conf_file }}"
+
+- name: Enable new site
+  shell: a2ensite {{ ap_http_conf_file }}
+
+- name: Restart Apache
+  shell: systemctl restart apache2
+
+- name: Disable default Apache site
+  shell: a2dissite 000-default.conf
+
+- name: Restart Apache
+  shell: systemctl restart apache2
+
+- name: Enable Apache
+  service:
+     name: "apache2"
+     enabled: yes
+

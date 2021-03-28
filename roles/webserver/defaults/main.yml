@@ -1,0 +1,11 @@
+---
+# defaults file for webserver
+
+#configuration file name
+ap_http_conf_file: "tooling.conf"
+
+#port for webserver
+ap_http_port: 80
+
+#location of app folder to be deployed (it is on Ansible host/local)
+ap_source_code_location: "/home/azureuser/tooling/html"

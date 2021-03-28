@@ -1,0 +1,5 @@
+---
+- name: install git
+  import_playbook: ../static-assignments/common.yml hostlist=jenkins---
+- name: install git
+  import_playbook: ../static-assignments/common.yml hostlist=jenkins

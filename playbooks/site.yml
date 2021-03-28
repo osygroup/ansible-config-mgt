@@ -1,0 +1,12 @@
+---
+- name: Update server, disable firewall and disable SELinux
+  import_playbook: ../static-assignments/update.yml hostlist=webserver-ansible
+
+- name: Install Git
+  import_playbook: ../static-assignments/common.yml hostlist=webserver-ansible
+
+- name: Set up tooling webserver
+  import_playbook: ../static-assignments/webservers.yml hostlist=webserver-ansible
+
+- name: Install RHEL PHP
+  import_playbook: ../static-assignments/php-rhel.yml hostlist=webserver-ansible
