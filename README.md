@@ -15,12 +15,11 @@ In this project, we will create a new virtual machine to be used as a
 webserver to illustrate using Ansible to deploy a webserver for the
 tooling application.
 
-### Prerequisite
+## Prerequisite
 
 Completion of Bastion Host & Ansible Configuration Management (Project 4)
 
-### Step 1 - Create a new webserver and pull Ansible files from GitHub
-repository
+## Step 1 - Create a new webserver and pull Ansible files from GitHub repository
 
 Create a new RHEL 8 virtual machine in the same virtual network as the
 other servers in the architecture and add its private IP address to the
@@ -96,7 +95,7 @@ playbook will run the *common.*yml playbook only on the new
 webserver-ansible virtual machine. To run the playbook on all the
 servers, '*hostlist=all*'.
 
-### Step 2 -- Create and Configure Roles
+## Step 2 -- Create and Configure Roles
 
 The tasks to configure the webserver can be written within another
 playbook, but that will make reusing the playbook difficult. A dedicated
@@ -415,13 +414,13 @@ webserver to view the tooling website:
 
 ![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image16.png)
 
-### Conclusion
+## Conclusion
 
 Ansible refactoring allows us to hide complexity and to provide defined
 interfaces. It also increases the ability to work in parallel on
 different parts of your Infrastructure as Code (IaC) project.
 
-### Credits
+## Credits
 
 <https://medium.com/faun/ansible-write-ansible-role-to-configure-apache-webserver-9c08aaf66528>
 
