@@ -1,4 +1,4 @@
-Ansible Refactoring & Static Assignments (Imports)
+# Ansible Refactoring & Static Assignments (Imports)
 
 Refactoring is a general term in software programming. It means making
 changes to the source code without any change to the external behaviour
@@ -15,15 +15,14 @@ In this project, we will create a new virtual machine to be used as a
 webserver to illustrate using Ansible to deploy a webserver for the
 tooling application.
 
-Step 1 - Create a new webserver and pull Ansible files from GitHub
+### Step 1 - Create a new webserver and pull Ansible files from GitHub
 repository
 
 Create a new RHEL 8 virtual machine in the same virtual network as the
 other servers in the architecture and add its private IP address to the
 *inventory/dev* list in the Ansible host:
 
-![](github\Project12.5\media\image1.png){width="5.78125in"
-height="3.9583333333333335in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image1.png)
 
 Pull down the latest code from master/main branch, and create a new
 branch (named something like *refactor*)
