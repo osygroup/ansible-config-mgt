@@ -32,30 +32,26 @@ selected
 
 *\$ sudo git branch*
 
-![](github\Project12.5\media\image2.png){width="4.322916666666667in"
-height="0.4791666666666667in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image2.png)
 
 Pull the remote main branch into the local main branch
 
 *\$ sudo git pull remote main*
 
-![](github\Project12.5\media\image3.png){width="6.177083333333333in"
-height="2.2768099300087488in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image3.png)
 
 Create a new branch named *refactor* and switch to it immediately:
 
 *\$ sudo git checkout -b refactor*
 
-![](github\Project12.5\media\image4.png){width="5.177083333333333in"
-height="0.3229166666666667in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image4.png)
 
 A new branch is created with the contents of the master/main branch.
 View the contents of the *refactor* branch.
 
 *\$ sudo git ls-tree -r \--name-only refactor*
 
-![](github\Project12.5\media\image5.png){width="5.885416666666667in"
-height="1.2604516622922135in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image5.png)
 
 Within the *playbook* folder, create a new file and name it *site.yml* -
 This will now be considered as the entry point into the entire
@@ -75,8 +71,7 @@ Edit the *hosts* field to:
 
 *hosts: \"{{ hostlist }}\"*
 
-![](github\Project12.5\media\image6.png){width="5.197916666666667in"
-height="1.9383694225721784in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image6.png)
 
 Within the *site.yml* file, import the *common.yml* playbook.
 
@@ -90,15 +85,14 @@ inside:
 *import_playbook: ../static-assignments/common.yml
 hostlist=webserver-ansible*
 
-![](github\Project12.5\media\image7.png){width="6.5in"
-height="1.3243055555555556in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image7.png)
 
 The '*hostlist=webserver-ansible*' will ensure that the *site.yml*
 playbook will run the *common.*yml playbook only on the new
 webserver-ansible virtual machine. To run the playbook on all the
 servers, '*hostlist=all*'.
 
-Step 2 -- Create and Configure Roles
+### Step 2 -- Create and Configure Roles
 
 The tasks to configure the webserver can be written within another
 playbook, but that will make reusing the playbook difficult. A dedicated
@@ -116,14 +110,12 @@ created.
 This will create all the folders and files needed to develop a role. The
 entire folder structure should look like this:
 
-![](github\Project12.5\media\image8.png){width="3.9270833333333335in"
-height="2.9583333333333335in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image8.png)
 
 Most of the files and folders are not required yet, so remove *tests*,
 *files*, and *vars*. The folder structure should now look like this:
 
-![](github\Project12.5\media\image9.png){width="3.34375in"
-height="1.9270833333333333in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image9.png)
 
 Go into *defaults* directory, and within the *main.yml* file, create
 some variables so that this role can be easily reusable. Copy and paste
@@ -141,8 +133,7 @@ the following variables into the *main.yml* file:
 
 *ap_source_code_location: \"/home/azureuser/tooling/html\"*
 
-![](github\Project12.5\media\image10.png){width="6.197916666666667in"
-height="2.5in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image10.png)
 
 Go into *templates* directory and create a config file to configure a
 new virtual host for the tooling app. The config file will be saved as a
@@ -155,8 +146,7 @@ configuration into the *.conf.j2* file created.
 
 *\</VirtualHost\>*
 
-![](github\Project12.5\media\image11.png){width="6.28125in"
-height="1.4270833333333333in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image11.png)
 
 Go into *tasks* directory, and within the *main.yml* file, start writing
 the configuration to install Apache server and deploy the tooling app's
@@ -297,8 +287,7 @@ ServerAliveCountMax=60*
 
 *become=True*
 
-![](github\Project12.5\media\image12.png){width="6.5in"
-height="2.1666666666666665in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image12.png)
 
 Run the export command on the terminal to let Ansible know where to find
 the configuration file.
@@ -311,8 +300,7 @@ Now check if the two roles were activated and are ready to be used.
 
 *\$ ansible-galaxy role list*
 
-![](github\Project12.5\media\image13.png){width="6.5in"
-height="0.7930555555555555in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image13.png)
 
 Navigate back to the *static-assignments* directory and create a new
 playbook for the webserver role named *webservers.yml*. This is where
@@ -411,28 +399,25 @@ Now run the playbook from the root of the Ansible directory:
 *\$* *ansible-playbook -i ansible/inventory/dev
 ansible/playbooks/site.yml*
 
-![](github\Project12.5\media\image14.png){width="6.123187882764654in"
-height="4.0625in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image14.png)
 
 Curl the private IP address of the webserver to confirm that the tooling
 website was deployed:
 
-![](github\Project12.5\media\image15.png){width="5.717501093613298in"
-height="3.9375in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image15.png)
 
 Head over to a web browser and type in the public IP address of the
 webserver to view the tooling website:
 
-![](github\Project12.5\media\image16.png){width="6.5in"
-height="3.4305555555555554in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image16.png)
 
-Conclusion
+### Conclusion
 
 Ansible refactoring allows us to hide complexity and to provide defined
 interfaces. It also increases the ability to work in parallel on
 different parts of your Infrastructure as Code (IaC) project.
 
-Credits
+### Credits
 
 <https://medium.com/faun/ansible-write-ansible-role-to-configure-apache-webserver-9c08aaf66528>
 
@@ -447,6 +432,9 @@ Credits
 <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/yum_module.html>
 
 <https://docs.ansible.com/ansible/2.5/modules/yum_module.html>
+
+![branches](https://user-images.githubusercontent.com/46828049/112753270-8a20af00-8f9c-11eb-8c48-a9cf79481ea7.JPG)
+
 
 <https://serverfault.com/a/1051530>
 
