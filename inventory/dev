@@ -12,7 +12,7 @@
 [jenkins]
 10.0.0.9 
 
-[jenkins_slave]
+[lb-ansible]
 10.0.0.10
 
 [lb]
@@ -20,3 +20,4 @@
 
 [webserver-ansible]
 10.0.0.13
+

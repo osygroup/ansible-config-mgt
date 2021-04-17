@@ -10,3 +10,9 @@
 
 - name: Install RHEL PHP
   import_playbook: ../static-assignments/php-rhel.yml hostlist=webserver-ansible
+
+- name: Install MySQl DB
+  include_playbook: ../dynamic-assignments/env-vars.yml
+  tags:
+    - always
+

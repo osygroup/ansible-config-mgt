@@ -1,0 +1,2 @@
+---
+- name: Install  import_playbook: ../static-assignments/mysqldb.yml hostlist=mysql-ansible

@@ -1,0 +1,15 @@
+---
+- name: set up MySQL Server
+  hosts: "{{ hostlist }}"
+#  vars_files:
+#     - vars/main.yml
+  tasks:
+    - name: Update server
+      package:
+        name: '*'
+        state: latest
+        only_upgrade: yes
+
+  roles:
+     - mysql
+  become: true

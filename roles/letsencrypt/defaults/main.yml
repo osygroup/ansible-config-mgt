@@ -1,0 +1,6 @@
+---
+# defaults file for letsencrypt
+certbot_site_name: "tooling.ernestok8s.com"
+certbot_package: "python3-certbot-nginx"
+certbot_plugin: "nginx"
+certbot_mail_address: osygroup@outlook.com

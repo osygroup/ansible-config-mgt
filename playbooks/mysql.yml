@@ -1,0 +1,3 @@
+---
+- name: Install MySQl DB
+  import_playbook: ../static-assignments/mysqldb.yml hostlist=lb-ansible

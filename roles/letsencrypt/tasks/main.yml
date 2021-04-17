@@ -1,0 +1,18 @@
+---
+# tasks file for letsencrypt
+- name : Install Core
+  command: "snap install core"
+ 
+- name : Install Certbot
+  command: "snap install --classic certbot"
+
+- name : Ensure that the certbot command can be run
+  command: "ln -s /snap/bin/certbot /usr/bin/certbot"
+
+- name: Create and Install Cert Using {{ certbot_plugin }} Plugin
+  command: "certbot --{{ certbot_plugin }} -d  {{ certbot_site_name }} -m {{ certbot_mail_address }} --agree-tos --noninteractive"
+   
+
+- name: Set Letsencrypt Cronjob for Certificate Auto Renewal
+  cron: name=letsencrypt_renewal special_time=monthly job="/usr/bin/certbot renew"
+  when: ansible_facts['os_family'] == "Debian"

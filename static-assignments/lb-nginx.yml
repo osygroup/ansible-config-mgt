@@ -1,0 +1,14 @@
+---
+- name: set up nginx LB
+  hosts: "{{ hostlist }}"
+
+  tasks:
+    - name: Update server
+      package:
+        name: '*'
+        state: latest
+        only_upgrade: yes
+
+  roles:
+     - nginx
+  become: true
