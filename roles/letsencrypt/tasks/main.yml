@@ -2,11 +2,15 @@
 # tasks file for letsencrypt
 - name : Install Core
   command: "snap install core"
- 
+
+- name : Remove certbot if installed previously
+  command: "rm /usr/bin/certbot"
+
 - name : Install Certbot
   command: "snap install --classic certbot"
 
 - name : Ensure that the certbot command can be run
+  command: "rm /usr/bin/certbot"
   command: "ln -s /snap/bin/certbot /usr/bin/certbot"
 
 - name: Create and Install Cert Using {{ certbot_plugin }} Plugin

@@ -11,8 +11,17 @@
 - name: Install RHEL PHP
   import_playbook: ../static-assignments/php-rhel.yml hostlist=webserver-ansible
 
-- name: Install MySQl DB
-  include_playbook: ../dynamic-assignments/env-vars.yml
+- name: Import dynamic variables
+  import_playbook: ../dynamic-assignments/env-vars.yml hostlist=all
   tags:
     - always
 
+- name: Install MySQl DB
+  import_playbook: ../static-assignments/mysqldb.yml hostlist=db-ansible
+
+- name: Setup LB
+  import_playbook: ../static-assignments/loadbalancers.yml hostlist=lb-ansible
+  when: load_balancer_is_required
+
+- name: Install Let's Encrypt on load balancer 
+  import_playbook: ../static-assignments/letsencrypt.yml hostlist=lb-ansible

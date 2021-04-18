@@ -1,3 +1,0 @@
----
-- name: Install nginx LB
-  import_playbook: ../static-assignments/lb-nginx.yml hostlist=lb-ansible

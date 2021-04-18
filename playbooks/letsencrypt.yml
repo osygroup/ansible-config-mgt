@@ -1,3 +1,0 @@
----
-- name: Install Let's Encrypt on load balancer 
-  import_playbook: ../static-assignments/letsencrypt.yml hostlist=lb-ansible
