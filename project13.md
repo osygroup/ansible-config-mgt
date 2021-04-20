@@ -124,30 +124,27 @@ Update *site.yml* with dynamic assignments by adding the following:
 
 *site.yml* should now look like this:
 
-![](github\Project13\media\image2.png){width="6.5in"
-height="2.879166666666667in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image2.png)
 
 Update the inventory/dev file to add the new servers created. In the
 screenshot below, new groups were created for the new servers:
 *ansible-webserver* (for the three webservers) *db-ansible* (for the
 MySQL server) and *lb-ansible* (for the load balancer):
 
-![](github\Project13\media\image3.png){width="4.364583333333333in"
-height="4.144662073490814in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image3).png
 
 In the tooling app folder that was cloned to the Ansible server, edit
 the *html/functions.php* file and change the private IP address of the
 database to the private IP of the new MySQL server:
 
-![](github\Project13\media\image4.png){width="5.743506124234471in"
-height="3.0in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image4.png)
 
-Step 2: Create roles
+## Step 2: Create roles
 
 The roles will be created for MySQL, Nginx load balancer and Let's
 Encrypt.
 
-Mysql Role:
+### Mysql Role:
 
 Create a MySQL role in the *roles* directory by downloading a MySQL role
 from Ansible Galaxy (created by 'geerlingguy'):
@@ -186,8 +183,7 @@ edit it to create a user named 'webaccess' and a database named
 
 *priv: \"tooling.\*:ALL\"*
 
-![](github\Project13\media\image5.png){width="5.375in"
-height="3.4351760717410325in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image5.png)
 
 Add the following to the *defaults/main.*yml file (as seen in the
 screenshot above immediately after the *Users* section). This table is
@@ -247,7 +243,7 @@ role will be referenced.
 
 *become: true*
 
-Nginx Load Balancer role:
+### Nginx Load Balancer role:
 
 Create an Nginx role in the *roles* directory by downloading an Nginx
 role from Ansible Galaxy (created by 'geerlingguy'):
@@ -261,9 +257,7 @@ In *defaults/main.*yml file of the Nginx role, change the
 the installation from creating any default vhost file in the
 *sites-enabled* directory of Nginx.
 
-![C:\\Users\\osygroup\\Desktop\\Darey\\Project
-13\\true.JPG](github\Project13\media\image6.jpeg){width="5.354166666666667in"
-height="3.4246609798775154in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image6.jpeg)
 
 At the end of the file, add the following variables:
 
@@ -310,9 +304,7 @@ upstream.*
 
 *}*
 
-![C:\\Users\\osygroup\\Desktop\\Darey\\Project
-13\\LB.JPG](github\Project13\media\image7.jpeg){width="5.463597987751531in"
-height="3.0833333333333335in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image7.jpeg)
 
 In *tasks/main.yml* file, copy the tow tasks below and insert it before
 the last task (Ensure nginx service is running as configured).
@@ -333,9 +325,7 @@ the last task (Ensure nginx service is running as configured).
 
 *state: absent*
 
-![C:\\Users\\osygroup\\Desktop\\Darey\\Project
-13\\lb2.JPG](github\Project13\media\image8.jpeg){width="5.0625in"
-height="3.559425853018373in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image8.jpeg)
 
 The first task will move the *load-balancer.conf* file to
 */etc/nginx/conf.d/* directory and the second task will delete the
@@ -387,10 +377,9 @@ respective environment's env-vars file:
 
 *load_balancer_is_required: true*
 
-![](github\Project13\media\image9.png){width="4.333333333333333in"
-height="1.0in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image9.png)
 
-Let's Encrypt role:
+### Let's Encrypt role:
 
 Run the code below within the *roles* folder to create a role for Let's
 Encrypt (to configure Secure Connection to an Nginx Load Balancer):
@@ -408,8 +397,7 @@ In the *letsencrypt* directory, add the following into the
 
 *certbot_mail_address: \<your_email_address\>*
 
-![](github\Project13\media\image10.png){width="5.3442760279965in"
-height="2.0104166666666665in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image10.png)
 
 NOTE: Don't forget to create a DNS record of type 'A' on the domain name
 that points to the public IP address of the load balancer and open port
@@ -525,16 +513,14 @@ Now check if all the roles were activated and are ready to be used.
 
 *\$ ansible-galaxy role list*
 
-![](github\Project13\media\image11.png){width="4.65625in"
-height="1.1666666666666667in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image11.png)
 
 Navigate out of the ansible directory and run the *site.yml* playbook
 
 *\$ ansible-playbook -i ansible/inventory/dev
 ansible/playbooks/site.yml*
 
-![](github\Project13\media\image12.png){width="6.052083333333333in"
-height="3.760567585301837in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image12.png)
 
 Note: The servers that shoe 'unreachable=0' are the servers that were
 not needed for this project. They were switched off.
@@ -542,13 +528,11 @@ not needed for this project. They were switched off.
 Head over to a web browser and type in the domain name that was
 registered to the load balancer to view the tooling website:
 
-![](github\Project13\media\image13.png){width="6.5in"
-height="3.3361111111111112in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image13.png)
 
 Login using the default details (username: admin, password: admin).
 
-![](github\Project13\media\image14.png){width="6.5in"
-height="3.6590277777777778in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image14.png)
 
 If the tooling website is not logging in with the default details,
 restart all the servers created for this project and attempt to login
@@ -571,18 +555,14 @@ In case this error is encountered when running the playbook "the output
 has been hidden due to the fact that 'no_log': true was specified for
 this result":
 
-![C:\\Users\\osygroup\\Desktop\\Darey\\Project
-13\\nolog.JPG](github\Project13\media\image15.jpeg){width="6.145833333333333in"
-height="0.8575590551181103in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image15.jpeg)
 
 Change *no_log: true* to *false* in the *tasks/users.yml* file of the
 MySQL role:
 
-![C:\\Users\\osygroup\\Desktop\\Darey\\Project
-13\\false.JPG](github\Project13\media\image16.jpeg){width="4.247767935258093in"
-height="2.1770833333333335in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image16.jpeg)
 
-Conclusion
+## Conclusion
 
 Included roles and tasks are similar to handlers - they may or may not
 run, depending on the results of other tasks in the top-level playbook.
@@ -596,7 +576,7 @@ for playbooks, because it is more reliable. With dynamic assignments, it
 is hard to debug playbook problems due to its dynamic nature. However,
 dynamic assignments can be used for environment-specific variables.
 
-Credits
+## Credits
 
 <https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse.html#playbooks-reuse>
 
