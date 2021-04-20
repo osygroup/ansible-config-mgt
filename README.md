@@ -414,9 +414,9 @@ In the *tasks/main.yml* file, add the below tasks:
 
 *command: \"snap install core\"*
 
-*- name : Remove certbot if installed previously*
+*#- name : Remove certbot if installed previously*
 
-*command: \"rm /usr/bin/certbot\"*
+*#command: \"rm /usr/bin/certbot\"*
 
 *- name : Install Certbot*
 
