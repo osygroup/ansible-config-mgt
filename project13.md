@@ -131,7 +131,7 @@ screenshot below, new groups were created for the new servers:
 *ansible-webserver* (for the three webservers) *db-ansible* (for the
 MySQL server) and *lb-ansible* (for the load balancer):
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image3).png
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image3.png)
 
 In the tooling app folder that was cloned to the Ansible server, edit
 the *html/functions.php* file and change the private IP address of the
