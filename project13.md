@@ -1,4 +1,4 @@
-Ansible Dynamic Assignments (Include) and Community Roles
+# Ansible Dynamic Assignments (Include) and Community Roles
 
 From Project 12, static assignments use *import* Ansible module. The
 module that enables dynamic assignments is *include*.
@@ -37,7 +37,7 @@ play:
 
 Task *include* and *import* statements can be used at arbitrary depth.
 
-Pre-requisite
+## Pre-requisite
 
 Create five new virtual machines in the Virtual network used for the
 Tooling webapp:
@@ -48,7 +48,7 @@ One Ubuntu 20.04 LTS server for the MySQL server
 
 One Ubuntu 20.04 LTS server for the load balancer
 
-Step 1: Introducing Dynamic Assignment into the structure
+## Step 1: Introducing Dynamic Assignment into the structure
 
 Check the branch that git is currently switched to:
 
@@ -74,8 +74,7 @@ use to set variables.
 
 The layout should now look like this:
 
-![](github\Project13\media\image1.png){width="3.78125in"
-height="2.9583333333333335in"}
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image1.png)
 
 Paste the instruction below into the env-vars.yml file.
 
