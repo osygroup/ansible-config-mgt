@@ -1,352 +1,229 @@
-# Project 5: Ansible Refactoring & Static Assignments (Imports)
+# Project 6: Ansible Dynamic Assignments (Include) and Community Roles
 
-Refactoring is a general term in software programming. It means making
-changes to the source code without any change to the external behaviour
-of the solution.
+From Project 5, static assignments use *import* Ansible module. The
+module that enables dynamic assignments is *include*.
 
-In Ansible, using roles is the best way to refactor source codes or
-artifacts. Similar tasks that are done very often e.g. managing user
-accounts, installing and configuring a web server or database can be
-abstracted into Ansible roles. This means a set of tasks can be
-maintained to be used among many playbooks, with variables to give
-flexibility where needed.
+Hence:
 
-In this project, we will create a new virtual machine to be used as a
-webserver to illustrate using Ansible to deploy a webserver for the
-tooling application.
+*import* = Static and *include* = Dynamic
 
-## Prerequisite
+When the *import* module is used, all statements are pre-processed at
+the time playbooks are parsed. Meaning, when you execute *site.yml*
+playbook, Ansible will process all the playbooks referenced during the
+time it is parsing the statements. This also means that, during actual
+execution, if any statement changes, such statements will not be
+considered. Hence, it is static.
 
-Completion of Bastion Host & Ansible Configuration Management (Project 4)
+On the other hand, when *include* module is used, all statements are
+processed only during execution of the playbook. Meaning, after the
+statements are parsed, any changes to the statements encountered during
+execution will be used.
 
-## Step 1 - Create a new webserver and pull Ansible files from GitHub repository
+For dynamic re-use, add an include\_\* task in the tasks section of a
+play:
 
-Create a new RHEL 8 virtual machine in the same virtual network as the
-other servers in the architecture and add its private IP address to the
-*inventory/dev* list in the Ansible host:
+*include_role*
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image1.png)
+*include_tasks*
 
-Pull down the latest code from master/main branch, and create a new
-branch (named something like *refactor*)
+*include_vars*
 
-Move into the git repository and check the branch that is currently
-selected
+For static re-use, add an import\_\* task in the tasks section of a
+play:
 
-*\$ sudo git branch*
+*import_role*
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image2.png)
+*import_tasks*
 
-Pull the remote main branch into the local main branch
+Task *include* and *import* statements can be used at arbitrary depth.
 
-*\$ sudo git pull remote main*
+## Pre-requisite
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image3.png)
+Create five new virtual machines in the Virtual network used for the
+Tooling webapp:
 
-Create a new branch named *refactor* and switch to it immediately:
+Three RHEL 8 servers for the webservers
 
-*\$ sudo git checkout -b refactor*
+One Ubuntu 20.04 LTS server for the MySQL server
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image4.png)
+One Ubuntu 20.04 LTS server for the load balancer
 
-A new branch is created with the contents of the master/main branch.
-View the contents of the *refactor* branch.
+## Step 1: Introducing Dynamic Assignment into the structure
 
-*\$ sudo git ls-tree -r \--name-only refactor*
+Check the branch that git is currently switched to:
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image5.png)
+*\$ git branch*
 
-Within the *playbook* folder, create a new file and name it *site.yml* -
-This will now be considered as the entry point into the entire
-infrastructure configuration. Other playbooks will be included here as a
-reference. In other words, *site.yml* will become a parent to all other
-playbooks that will be developed, including *common.yml* that was
-created previously.
+Create a new branch (named *dynamic)* off the *refactor* branch and
+switch to it immediately:
 
-Create a new folder and name it *static-assignments*. This folder is
-where all other dynamic playbooks will be stored. This is merely for
-easy organization of work. It is not an Ansible specific concept.
+*\$ git checkout -b dynamic refactor*
 
-Move the *common.yml* file into the newly created *static-assignments*
-folder.
+Create a new folder, name it *dynamic-assignments*. Then inside this
+folder, create a new file and name it *env-vars.yml*.
 
-Edit the *hosts* field to:
+Since we will be using the same Ansible to configure multiple
+environments, and each of these environments will have certain unique
+attributes, such as servername, ip-address etc., we will need a way to
+set values to variables per specific environment.
 
-*hosts: \"{{ hostlist }}\"*
+For this reason, we will now create a folder to keep each environment's
+variables file. Therefore, create a new folder *env-vars* in the Ansible
+folder, then for each environment, create new YAML files which we will
+use to set variables.
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image6.png)
+The layout should now look like this:
 
-Within the *site.yml* file, import the *common.yml* playbook.
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image1.png)
 
-Edit the *site.yml* file with a text editor and paste the following
-inside:
+Paste the instruction below into the env-vars.yml file.
 
 *\-\--*
 
-*- name: Install Git*
+*- name: collate variables from env specific file, if it exists*
 
-*import_playbook: ../static-assignments/common.yml
-hostlist=webserver-ansible*
+*hosts: all*
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image7.png)
+*tasks:*
 
-The '*hostlist=webserver-ansible*' will ensure that the *site.yml*
-playbook will run the *common.*yml playbook only on the new
-webserver-ansible virtual machine. To run the playbook on all the
-servers, '*hostlist=all*'.
+*- name: looping through list of available files*
 
-## Step 2 -- Create and Configure Roles
+*include_vars: \"{{ item }}\"*
 
-The tasks to configure the webserver can be written within another
-playbook, but that will make reusing the playbook difficult. A dedicated
-role is needed to organize Ansible neatly.
+*with_first_found:*
 
-To create a role, first, create a directory named *roles* in the parent
-*ansible* folder. Roles have specific folder structure which can be
-manually created. But, rather than doing the hard work, there is a
-smarter way to do that by using an ansible utility called
-*ansible-galaxy*. Run the code below within the *roles* folder just
-created.
+*- files:*
 
-*\$ sudo ansible-galaxy init webserver*
+*- dev.yml*
 
-This will create all the folders and files needed to develop a role. The
-entire folder structure should look like this:
+*- stage.yml*
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image8.png)
+*- prod.yml*
 
-Most of the files and folders are not required yet, so remove *tests*,
-*files*, and *vars*. The folder structure should now look like this:
+*- stage.yml*
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image9.png)
+*- default.yml*
 
-Go into *defaults* directory, and within the *main.yml* file, create
-some variables so that this role can be easily reusable. Copy and paste
-the following variables into the *main.yml* file:
+*paths:*
 
-*\#configuration file name*
+*- \"{{ playbook_dir }}/../env-vars\"*
 
-*ap_http_conf_file: \"tooling.conf\"*
+*tags:*
 
-*\#port for webserver*
+*- always*
 
-*ap_http_port: 80*
+Update *site.yml* with dynamic assignments by adding the following:
 
-*\#location of app folder to be deployed (it is on the Ansible host)*
+*- name: Import dynamic variables*
 
-*ap_source_code_location: \"/home/azureuser/tooling/html\"*
+*import_playbook: ../dynamic-assignments/env-vars.yml hostlist=all*
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image10.png)
+*tags:*
 
-Go into *templates* directory and create a config file to configure a
-new virtual host for the tooling app. The config file will be saved as a
-Jinja 2 template file e.g. *tooling.conf.j2*. Copy the below
-configuration into the *.conf.j2* file created.
+*- always*
 
-*\<VirtualHost \*:{{ap_http_port}}\>*
+*site.yml* should now look like this:
 
-*DocumentRoot /var/www/html*
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image2.png)
 
-*\</VirtualHost\>*
+Update the inventory/dev file to add the new servers created. In the
+screenshot below, new groups were created for the new servers:
+*ansible-webserver* (for the three webservers) *db-ansible* (for the
+MySQL server) and *lb-ansible* (for the load balancer):
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image11.png)
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image3).png
 
-Go into *tasks* directory, and within the *main.yml* file, start writing
-the configuration to install Apache server and deploy the tooling app's
-html folder into the webserver's */var/www* directory.
+In the tooling app folder that was cloned to the Ansible server, edit
+the *html/functions.php* file and change the private IP address of the
+database to the private IP of the new MySQL server:
 
-Copy and paste the following into the *main.yml* file:
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image4.png)
 
-*- name: Install apache*
+## Step 2: Create roles
 
-*package:*
+The roles will be created for MySQL, Nginx load balancer and Let's
+Encrypt.
 
-*name: httpd*
+### Mysql Role:
 
-*state: present*
+Create a MySQL role in the *roles* directory by downloading a MySQL role
+from Ansible Galaxy (created by 'geerlingguy'):
 
-*- name: create /var/www folder if it does not exist*
+*\$ ansible-galaxy install geerlingguy.mysql*
 
-*file:*
+Rename the role folder from *geerlingguy.mysql* to *mysql.*
 
-*path: /var/www*
+*\$ sudo mv geerlingguy.mysql mysql*
 
-*state: directory*
+Enter the *mysql* role directory, open the defaults/main.yml file and
+edit it to create a user named 'webaccess' and a database named
+'tooling':
 
-*mode: \'0755\'*
+*\# Databases.*
 
-*- name: Copy source code/artifacts*
+*mysql_databases:*
 
-*copy:*
+*- name: tooling*
 
-*src: \"{{ ap_source_code_location }}\"*
+*\# collation: utf8_general_ci*
 
-*dest: /var/www/*
+*\# encoding: utf8*
 
-*- name: Set up Apache VirtualHost*
+*\# replicate: 1*
 
-*template:*
+*\# Users.*
 
-*src: \"tooling.conf.j2\"*
+*mysql_users:*
 
-*dest: \"/etc/httpd/conf.d/{{ ap_http_conf_file }}\"*
+*- name: webaccess*
 
-*- name: Enable Httpd*
+*host: \"%\"*
 
-*service:*
+*password: Password11\#*
 
-*name: \"httpd\"*
+*priv: \"tooling.\*:ALL\"*
 
-*enabled: yes*
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image5.png)
 
-*- name: Start Httpd*
+Add the following to the *defaults/main.*yml file (as seen in the
+screenshot above immediately after the *Users* section). This table is
+in the tooling repository cloned on the Ansible host:
 
-*service:*
+*\#location of tooling app database table to be dumped in the MySQL
+server*
 
-*name: \"httpd\"*
+*tooling_database_location: \"/home/azureuser/tooling/tooling-db.sql\"*
 
-*state: started*
+Add this at the bottom of the *tasks/main.yml* file to dump the database
+table:
 
-*- name: Stop firewall*
+*- name: Copy tooling app database table*
 
-*shell: systemctl stop firewalld*
+*  copy:*
 
-*- name: Disable firewall*
+*       src: \"{{ tooling_database_location }}\"*
 
-*shell: systemctl disable firewalld*
+*       dest: /home/*
 
-*- name: Mask firewall*
+*- name: Dump tooling app database table*
 
-*shell: sudo systemctl mask \--now firewalld*
+*mysql_db:*
 
-Create another role in the *roles* folder for installing PHP and all the
-necessary modules.
+*name: tooling*
 
-*\$ sudo ansible-galaxy init php-rhel*
+*state: import*
 
-Only the *tasks* directory will be configured for this role. Edit its
-*main.yml* file and add the following PHP 8.0 installation
-configuration.
-
-*- name: Install PHP 8.0 in RHEL*
-
-*shell: dnf install -y
-https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm*
-
-*- name: Step 2*
-
-*shell: dnf install -y
-http://rpms.remirepo.net/enterprise/remi-release-8.rpm*
-
-*- name: Step 3*
-
-*shell: dnf module reset php*
-
-*- name: Step 4*
-
-*shell: dnf module install -y php:remi-8.0*
-
-*- name: Step 5*
-
-*shell: dnf install -y
-php-{mysqlnd,xml,xmlrpc,curl,gd,imagick,mbstring,opcache,soap,zip}*
-
-*- name: Restart Httpd*
-
-*shell: systemctl restart httpd*
-
-Ansible uses a configuration file to customize settings. The file is
-*ansible.cfg* file. It can be located anywhere, but it must be exported
-as an environmental variable to let Ansible know where to find this
-file.
-
-Create a new file in the *roles* directory and name it *ansible.cfg* and
-update it with the below content, specifying the full path to the roles.
-If this is not done, any role you download through galaxy will be
-installed in the default settings which could either be in
-/etc/ansible/ansible.cfg or \~/.ansible.cfg
-
-*\[defaults\]*
-
-*timeout = 160*
-
-*roles_path = \<FULL PATH TO ANSIBLE ROLES\>*
-
-*callback_whitelist = profile_tasks*
-
-*log_path=\~/ansible.log*
-
-*host_key_checking = False*
-
-*gathering = smart*
-
-*\[ssh_connection\]*
-
-*ssh_args = -o ControlMaster=auto -o ControlPersist=30m -o
-ControlPath=/tmp/ansible-ssh-%h-%p-%r -o ServerAliveInterval=60 -o
-ServerAliveCountMax=60*
-
-*\[privilege_escalation\]*
-
-*become=True*
-
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image12.png)
-
-Run the export command on the terminal to let Ansible know where to find
-the configuration file.
-
-*\$ export ANSIBLE_CONFIG=\<full_path_to_ansible.cfg_file\>*
-
-Once this is exported, all the roles will be activated.
-
-Now check if the two roles were activated and are ready to be used.
-
-*\$ ansible-galaxy role list*
-
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image13.png)
+*target: /home/tooling-db.sql*
 
 Navigate back to the *static-assignments* directory and create a new
-playbook for the webserver role named *webservers.yml*. This is where
-the webserver role will be referenced.
+playbook for the MySQL role named mysqldb*.yml*. This is where the MySQL
+role will be referenced.
 
 *\-\--*
 
-*- name: set up tooling webserver*
+*- name: set up MySQL Server*
 
 *hosts: \"{{ hostlist }}\"*
-
-*roles:*
-
-*- webserver*
-
-*become: true*
-
-Also create a new playbook for the php-rhel role named *php-rhel.yml*.
-
-*\-\--*
-
-*- name: set up tooling webserver*
-
-*hosts: \"{{ hostlist }}\"*
-
-*roles:*
-
-*- php-rhel*
-
-*become: true*
-
-Since the roles will be run on a new RHEL virtual machine, create a
-playbook for updating the virtual machine and disabling SELinux.
-
-Add the below tasks into the playbook named *update.yml*:
-
-*\-\--*
-
-*- name: Update server and disable SELinux*
-
-*hosts: \"{{ hostlist }}\"*
-
-*become: true*
 
 *tasks:*
 
@@ -358,22 +235,226 @@ Add the below tasks into the playbook named *update.yml*:
 
 *state: latest*
 
-*update_only: yes*
+*only_upgrade: yes*
 
-*- name: disable SELinux*
+*roles:*
 
-*shell: setenforce 0*
+*- mysql*
 
-*- name: setsebool for NFS*
+*become: true*
 
-*shell: setsebool -P httpd_use_nfs=1*
+### Nginx Load Balancer role:
 
-Remember that the entry point to the Ansible configuration is the
-*site.yml* file in the *playbooks* directory. Without updating the entry
-point, all the playbooks in the *static-assignments* directory will not
-be used.
+Create an Nginx role in the *roles* directory by downloading an Nginx
+role from Ansible Galaxy (created by 'geerlingguy'):
 
-The updated *site.yml* file would look like this:
+*\$ ansible-galaxy install geerlingguy.nginx*
+
+Rename the role folder from *geerlingguy.nginx* to *nginx.*
+
+In *defaults/main.*yml file of the Nginx role, change the
+*nginx_remove_default_vhost* from *false* to *true*. This will prevent
+the installation from creating any default vhost file in the
+*sites-enabled* directory of Nginx.
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image6.jpeg)
+
+At the end of the file, add the following variables:
+
+*enable_nginx_lb: true*
+
+*load_balancer_is_required: true*
+
+Go into *templates* directory and create and create the load balancer
+configuration file with a text editor. The config file will be saved as
+a Jinja 2 template file e.g. *load-balancer.conf.j2*. Copy and paste the
+below configuration into the .conf.j2 file created:
+
+*\# Define which servers to include in the load balancing scheme.*
+
+*\# It\'s best to use the servers\' private IPs for better performance
+and security.*
+
+*upstream backend {*
+
+*       server \<webserver1_private_IP\>;*
+
+*       server \<webserver2_private_IP\>;*
+
+*       server \<webserver3_private_IP\>;*
+
+*}*
+
+*\# This server accepts all traffic to port 80 and passes it to the
+upstream.*
+
+*\# Notice that the upstream name and the proxy_pass need to match.*
+
+*server {*
+
+*      listen 80;*
+
+*server_name \<domain_name\> www.\<domain_name\>;*
+
+*      location / {*
+
+*          proxy_pass http://backend;*
+
+*      }*
+
+*}*
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image7.jpeg)
+
+In *tasks/main.yml* file, copy the tow tasks below and insert it before
+the last task (Ensure nginx service is running as configured).
+
+*- name: Set up load-balancer config file*
+
+*template:*
+
+*src: \"load-balancer.conf.j2\"*
+
+*dest: \"/etc/nginx/conf.d/load-balancer.conf\"*
+
+*- name: Delete default.conf file from conf.d directory*
+
+*ansible.builtin.file:*
+
+*path: /etc/nginx/conf.d/default.conf*
+
+*state: absent*
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image8.jpeg)
+
+The first task will move the *load-balancer.conf* file to
+*/etc/nginx/conf.d/* directory and the second task will delete the
+*default.conf* file created by the Nginx installation so that only the
+load balancer config will be available.
+
+Navigate back to the *static-assignments* directory and create a new
+playbook for the load balancer role named *loadbalancers.yml*. This is
+where the Nginx load balancer role will be referenced.
+
+*\-\--*
+
+*- name: set up LB*
+
+*hosts: \"{{ hostlist }}\"*
+
+*tasks:*
+
+*- name: Update server*
+
+*package:*
+
+*name: \'\*\'*
+
+*state: latest*
+
+*only_upgrade: yes*
+
+*roles:*
+
+*- { role: nginx, when: enable_nginx_lb and load_balancer_is_required }*
+
+*\# - { role: apache, when: enable_apache_lb and
+load_balancer_is_required }*
+
+*become: true*
+
+To create a role for Apache load balancer, you can decide to develop
+your own roles or find available ones from the [Ansible Galaxy
+community](https://galaxy.ansible.com/home).
+
+Make use of env-vars\\uat.yml file to define which load balancer to use
+in UAT environment by setting respective environmental variable to true.
+
+Activate load balancer and enable Nginx by setting these in the
+respective environment's env-vars file:
+
+*enable_nginx_lb: true*
+
+*load_balancer_is_required: true*
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image9.png)
+
+### Let's Encrypt role:
+
+Run the code below within the *roles* folder to create a role for Let's
+Encrypt (to configure Secure Connection to an Nginx Load Balancer):
+
+*\$ sudo ansible-galaxy init letsencrypt*
+
+In the *letsencrypt* directory, add the following into the
+*defaults/main.yml* file:
+
+*certbot_site_name: \"\<domain_name\>\"*
+
+*certbot_package: \"python3-certbot-nginx\"*
+
+*certbot_plugin: \"nginx\"*
+
+*certbot_mail_address: \<your_email_address\>*
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image10.png)
+
+NOTE: Don't forget to create a DNS record of type 'A' on the domain name
+that points to the public IP address of the load balancer and open port
+443 (port number for https) in the Inbound port rules of the Network
+Security Group of the load balancer VM.
+
+In the *tasks/main.yml* file, add the below tasks:
+
+*\-\--*
+
+*\# tasks file for letsencrypt*
+
+*- name : Install Core*
+
+*command: \"snap install core\"*
+
+*- name : Remove certbot if installed previously*
+
+*command: \"rm /usr/bin/certbot\"*
+
+*- name : Install Certbot*
+
+*command: \"snap install \--classic certbot\"*
+
+*- name : Ensure that the certbot command can be run*
+
+*command: \"ln -s /snap/bin/certbot /usr/bin/certbot\"*
+
+*- name: Create and Install Cert Using {{ certbot_plugin }} Plugin*
+
+*command: \"certbot \--{{ certbot_plugin }} -d {{ certbot_site_name }}
+-m {{ certbot_mail_address }} \--agree-tos \--noninteractive\"*
+
+*- name: Set Letsencrypt Cronjob for Certificate Auto Renewal*
+
+*cron: name=letsencrypt_renewal special_time=monthly
+job=\"/usr/bin/certbot renew\"*
+
+*when: ansible_facts\[\'os_family\'\] == \"Debian\"*
+
+Navigate back to the *static-assignments* directory and create a new
+playbook for the Let's Encrypt role named *letsencrypt.yml*. This is
+where the Let's Encrypt role will be referenced.
+
+*\-\--*
+
+*- name: Setup Let\'s Encrypt for Debian*
+
+*hosts: \"{{ hostlist }}\"*
+
+*roles:*
+
+*- letsencrypt*
+
+*become: true*
+
+Update the site.yml file to include all the new roles created:
 
 *\-\--*
 
@@ -397,49 +478,136 @@ hostlist=webserver-ansible*
 *import_playbook: ../static-assignments/php-rhel.yml
 hostlist=webserver-ansible*
 
-Now run the playbook from the root of the Ansible directory:
+*- name: Import dynamic variables*
 
-*\$* *ansible-playbook -i ansible/inventory/dev
+*import_playbook: ../dynamic-assignments/env-vars.yml hostlist=all*
+
+*tags:*
+
+*- always*
+
+*- name: Install MySQl DB*
+
+*import_playbook: ../static-assignments/mysqldb.yml hostlist=db-ansible*
+
+*- name: Setup LB*
+
+*import_playbook: ../static-assignments/loadbalancers.yml
+hostlist=lb-ansible*
+
+*when: load_balancer_is_required*
+
+*- name: Install Let\'s Encrypt on load balancer*
+
+*import_playbook: ../static-assignments/letsencrypt.yml
+hostlist=lb-ansible*
+
+Run the export command on the terminal to let Ansible know where to find
+the configuration file. 
+
+*\$ export ANSIBLE_CONFIG=\<full_path_to_ansible.cfg_file\>*
+
+Once this is exported, all the roles will be activated.
+
+Now check if all the roles were activated and are ready to be used.
+
+*\$ ansible-galaxy role list*
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image11.png)
+
+Navigate out of the ansible directory and run the *site.yml* playbook
+
+*\$ ansible-playbook -i ansible/inventory/dev
 ansible/playbooks/site.yml*
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image14.png)
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image12.png)
 
-Curl the private IP address of the webserver to confirm that the tooling
-website was deployed:
+Note: The servers that shoe 'unreachable=0' are the servers that were
+not needed for this project. They were switched off.
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image15.png)
+Head over to a web browser and type in the domain name that was
+registered to the load balancer to view the tooling website:
 
-Head over to a web browser and type in the public IP address of the
-webserver to view the tooling website:
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image13.png)
 
-![](https://github.com/osygroup/Images/blob/main/Ansible-Refactoring/image16.png)
+Login using the default details (username: admin, password: admin).
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image14.png)
+
+If the tooling website is not logging in with the default details,
+restart all the servers created for this project and attempt to login
+again.
+
+Navigate into the ansible directory and add all the created files in
+this project to update the new local branch created (named *dynamic*):
+
+*\$ sudo git add .*
+
+Commit the added files:
+
+*\$ sudo git commit -m \"leave_a\_comment_here\"*
+
+Push this new branch to Github:
+
+*\$ sudo git push -u origin dynamic*
+
+In case this error is encountered when running the playbook "the output
+has been hidden due to the fact that 'no_log': true was specified for
+this result":
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image15.jpeg)
+
+Change *no_log: true* to *false* in the *tasks/users.yml* file of the
+MySQL role:
+
+![](https://github.com/osygroup/Images/blob/main/Ansible-Dynamic/image16.jpeg)
 
 ## Conclusion
 
-Ansible refactoring allows us to hide complexity and to provide defined
-interfaces. It also increases the ability to work in parallel on
-different parts of your Infrastructure as Code (IaC) project.
+Included roles and tasks are similar to handlers - they may or may not
+run, depending on the results of other tasks in the top-level playbook.
+
+The primary advantage of using *include\_\** statements is looping. When
+a loop is used with an *include*, the included tasks or role will be
+executed once for each item in the loop.
+
+Take note that in most cases it is recommended to use static assignments
+for playbooks, because it is more reliable. With dynamic assignments, it
+is hard to debug playbook problems due to its dynamic nature. However,
+dynamic assignments can be used for environment-specific variables.
 
 ## Credits
 
-<https://medium.com/faun/ansible-write-ansible-role-to-configure-apache-webserver-9c08aaf66528>
+<https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse.html#playbooks-reuse>
 
-<https://docs.ansible.com/ansible/latest/collections/ansible/builtin/copy_module.html>
+<https://docs.ansible.com/ansible/latest/collections/ansible/builtin/include_role_module.html#include-role-module>
 
-<https://www.mydailytutorials.com/how-to-copy-files-and-directories-in-ansible-using-copy-and-fetch-modules/>
+<https://docs.ansible.com/ansible/latest/collections/ansible/builtin/include_vars_module.html#include-vars-module>
 
-<https://stackoverflow.com/questions/62392584/ansible-to-check-particular-directory-exists-if-not-create-it>
+<https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_module.html>
 
-<https://stackoverflow.com/a/63668940>
+<https://severalnines.com/database-blog/introduction-mysql-deployment-using-ansible-role>
 
-<https://docs.ansible.com/ansible/latest/collections/ansible/builtin/yum_module.html>
+<https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_user_module.html>
 
-<https://docs.ansible.com/ansible/2.5/modules/yum_module.html>
+<https://docs.ansible.com/ansible/latest/collections/ansible/builtin/file_module.html>
 
-<https://serverfault.com/a/1051530>
+<https://linuxbuz.com/linuxhowto/install-letsencrypt-ssl-ansible>
 
-<https://blog.programster.org/ansible-update-and-reboot-if-required-amazon-linux-servers>
+<https://serverfault.com/questions/997617/ansible-gives-me-an-error-during-execution-of-some-playbooks>
 
-<https://www.educba.com/ansible-yum-module/>
+<https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-18-04>
 
-<https://opensource.com/article/20/1/ansible-playbooks-lessons>
+<https://stackoverflow.com/questions/49172841/how-to-install-certbot-lets-encrypt-without-interaction>
+
+<https://docs.ansible.com/ansible/2.8/modules/mysql_db_module.html>
+
+<https://www.iaspnetcore.com/blog/blogpost/5d9865cc72c1772b244afe0f>
+
+<https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse.html#playbooks-reuse>
+
+<https://docs.ansible.com/ansible/latest/collections/ansible/builtin/include_vars_module.html#include-vars-module>
+
+<https://ansible-project.narkive.com/CLb9jRRm/mysql-db-state-import-only-once>
+
+<https://askubuntu.com/a/398850>
