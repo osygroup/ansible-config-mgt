@@ -17,7 +17,7 @@ jobs:
         run: |
           # eval "$(ssh-agent -s)"
           mkdir .ssh
-          ls ~/.ssh
+          # ls ~/.ssh
           cp id_rsa ~/.ssh/
           git remote add origin git@github.com:osygroup/ansible-config-mgt.git
           echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
