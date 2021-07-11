@@ -1,0 +1,28 @@
+name: delete branches
+on:
+  push:
+    branches:
+      - main
+
+
+jobs:
+  helm_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # This will set some environment variables from vault keys
+      - uses: actions/checkout@v2
+      - name: Delete branches 
+        working-directory: testdir
+        run: |
+          cp cr.yaml ~/.ssh
+          git remote add origin git@github.com:osygroup/ansible-config-mgt.git
+          echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+          git fetch
+          gest=$(git branch -r | grep -e testdel -e pier | sed 's/origin\///')
+          git push origin --delete $gest
+          
+          # kubectl get ns -oname | grep "namespace/${NAMESPACE_PREFIX}-${NAMESPACE_SUFFIX}" \
+          #   || kubectl create namespace "${NAMESPACE_PREFIX}-${NAMESPACE_SUFFIX}"
+          # kubectl label --overwrite=true ns "${NAMESPACE_PREFIX}-${NAMESPACE_SUFFIX}" istio-injection=enabled
+          # helm upgrade --install --atomic dev-kubernetes-dashboard --namespace "${NAMESPACE_PREFIX}-${NAMESPACE_SUFFIX}" ./K8S-dashboard -f ${SERVICE_NAME}/values-$ENVIRONMENT.yaml 
