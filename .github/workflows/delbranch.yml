@@ -22,7 +22,7 @@ jobs:
           # ls -a
           # cp id_rsa ~/.ssh/
           # git remote add origin git@github.com:osygroup/ansible-config-mgt.git
-          echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+          echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> .ssh/config
           git fetch
           gest=$(git branch -r | grep -e testdel -e pier | sed 's/origin\///')
           git push origin --delete $gest
