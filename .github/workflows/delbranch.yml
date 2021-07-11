@@ -16,6 +16,7 @@ jobs:
         working-directory: testdir
         run: |
           eval "$(ssh-agent -s)"
+          chmod 400 .ssh/id_rsa
           ssh-add .ssh/id_rsa
           # mkdir .ssh
           # ls -a
