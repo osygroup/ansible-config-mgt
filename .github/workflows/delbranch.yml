@@ -17,7 +17,7 @@ jobs:
         run: |
           # Github's ubuntu job runner has no SSH configurations, so you need to manually start 'ssh-agent'
           # to help you with the SSH commands. You will have to create .ssh directory in the repo and add your
-          # private key and config file (this is used for silently ignoring the authenticity of github.com) inside.
+          # private key and config file (this is used for silently ignoring the authenticity of github.com) inside
           eval "$(ssh-agent -s)"
           # In case your SSH key is too open
           chmod 400 .ssh/id_rsa
