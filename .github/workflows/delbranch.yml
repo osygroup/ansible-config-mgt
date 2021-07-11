@@ -22,7 +22,7 @@ jobs:
         run: |
           # Github's ubuntu job runner has no SSH configurations, so you need to manually start 'ssh-agent'
           # to help you with the SSH commands. You will have to create .ssh directory in the repo and add an empty
-          # file named 'config' (this is used for silently ignoring the authenticity of github.com) inside
+          # file named 'config' (this is used for silently ignoring the authenticity of github.com) inside.
           eval "$(ssh-agent -s)"
           # actions/checkout@v2 already has added the remote repository, so no need for 'git remote add...'
           # git remote add origin git@github.com:osygroup/ansible-config-mgt.git
