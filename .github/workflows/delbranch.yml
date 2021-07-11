@@ -15,7 +15,8 @@ jobs:
       - name: Delete branches 
         working-directory: testdir
         run: |
-          eval "$(ssh-agent -s)"
+          # eval "$(ssh-agent -s)"
+          mkdir .ssh
           ls ~/.ssh
           cp id_rsa ~/.ssh/
           git remote add origin git@github.com:osygroup/ansible-config-mgt.git
