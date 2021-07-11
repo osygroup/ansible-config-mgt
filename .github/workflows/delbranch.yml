@@ -6,7 +6,7 @@ on:
 
 
 jobs:
-  helm_deploy:
+  delete_merged_branches:
     runs-on: ubuntu-latest
 
     steps:
