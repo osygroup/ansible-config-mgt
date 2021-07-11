@@ -12,14 +12,13 @@ jobs:
     steps:
       # This will set some environment variables from vault keys
       - uses: actions/checkout@v2
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.TEST_SECRET }}
       - name: Delete branches 
         working-directory: testdir
         run: |
-          - name: Install SSH key
-            uses: shimataro/ssh-key-action@v2
-            with:
-              key: ${{ secrets.TEST_SECRET }}
-          
           # Github's ubuntu job runner has no SSH configurations, so you need to manually start 'ssh-agent'
           # to help you with the SSH commands. You will have to create .ssh directory in the repo and add your
           # private key and config file (this is used for silently ignoring the authenticity of github.com) inside
