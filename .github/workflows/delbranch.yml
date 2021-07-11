@@ -15,7 +15,7 @@ jobs:
       - name: Delete branches 
         working-directory: testdir
         run: |
-          # eval "$(ssh-agent -s)"
+          eval "$(ssh-agent -s)"
           # mkdir .ssh
           # ls -a
           # cp id_rsa ~/.ssh/
