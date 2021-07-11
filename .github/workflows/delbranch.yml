@@ -15,19 +15,18 @@ jobs:
       - name: Delete branches 
         working-directory: testdir
         run: |
+          # Github's ubuntu job runner has no SSH configurations, so you need to manually start 'ssh-agent'
+          # to help you with the SSH commands. You will have to create .ssh directory in the repo and add your
+          # private key and config file (this is used for silently ignoring the authenticity of github.com) inside
           eval "$(ssh-agent -s)"
+          # In case your SSH key is too open
           chmod 400 .ssh/id_rsa
+          # Add your SSH private key to the ssh-agent
           ssh-add .ssh/id_rsa
-          # mkdir .ssh
-          # ls -a
-          # cp id_rsa ~/.ssh/
+          # actions/checkout@v2 already has added the remote repository, so no need for 'git remote add...'
           # git remote add origin git@github.com:osygroup/ansible-config-mgt.git
           echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> .ssh/config
           git fetch
           gest=$(git branch -r | grep -e testdel -e pier | sed 's/origin\///')
           git push origin --delete $gest
-          
-          # kubectl get ns -oname | grep "namespace/${NAMESPACE_PREFIX}-${NAMESPACE_SUFFIX}" \
-          #   || kubectl create namespace "${NAMESPACE_PREFIX}-${NAMESPACE_SUFFIX}"
-          # kubectl label --overwrite=true ns "${NAMESPACE_PREFIX}-${NAMESPACE_SUFFIX}" istio-injection=enabled
-          # helm upgrade --install --atomic dev-kubernetes-dashboard --namespace "${NAMESPACE_PREFIX}-${NAMESPACE_SUFFIX}" ./K8S-dashboard -f ${SERVICE_NAME}/values-$ENVIRONMENT.yaml 
+         
