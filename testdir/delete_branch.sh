@@ -16,3 +16,6 @@ done
 echo Hello Service-Transcode team, 
 echo Kindly prune the following old branches:
 git for-each-ref --sort=-committerdate refs/remotes/ --format='%(refname:short) %(authorname) (%(committerdate:relative))' | grep -f prune.txt
+
+
+curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World!"}' https://hooks.slack.com/services/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
