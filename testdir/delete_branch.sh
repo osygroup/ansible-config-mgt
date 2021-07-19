@@ -18,4 +18,4 @@ echo Kindly prune the following old branches:
 git for-each-ref --sort=-committerdate refs/remotes/ --format='%(refname:short) %(authorname) (%(committerdate:relative))' | grep -f prune.txt
 
 
-curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World!"}' https://hooks.slack.com/services/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
+curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World!"}' ${{ secrets.SLACK_WEBHOOK }}
