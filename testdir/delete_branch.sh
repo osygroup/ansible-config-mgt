@@ -8,7 +8,7 @@ fi
 
 
 for k in $(git branch -r | grep -v -e develop -e dev -e prod -e HEAD | sed /\*/d); do 
-  if [ -z "$(git log -1 --since='200 days ago' -s $k)" ]; then
+  if [ -z "$(git log -1 --since='60 days ago' -s $k)" ]; then
     echo "$k" >> prune.txt
   fi
 done
