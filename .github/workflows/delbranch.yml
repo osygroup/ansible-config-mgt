@@ -27,5 +27,4 @@ jobs:
           # actions/checkout@v2 already has added the remote repository, so no need for 'git remote add...'
           # git remote add origin git@github.com:osygroup/ansible-config-mgt.git
           ## echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> .ssh/config
-          git fetch --prune
           bash delete_branch.sh
