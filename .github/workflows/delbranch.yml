@@ -3,7 +3,9 @@ on:
   push:
     branches:
       - main
-
+      
+env:
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
 jobs:
   delete_merged_branches:
@@ -19,8 +21,6 @@ jobs:
       #     known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
       - name: Delete branches 
         working-directory: testdir
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         run: |
           # Github's ubuntu job runner has no SSH configurations, so you need to manually start 'ssh-agent'
           # to help you with the SSH commands. You will have to create .ssh directory in the repo and add an empty
