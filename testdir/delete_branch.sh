@@ -1,6 +1,6 @@
 #! /bin/sh
 git fetch --prune
-DELBRANCH=$(git branch -r --merged origin/develop | grep -v -e develop -e dev -e prod -e HEAD | sed 's/origin\///')
+DELBRANCH=$(git branch -r --merged origin/main | grep -v -e develop -e dev -e prod -e HEAD | sed 's/origin\///')
 if [ "$DELBRANCH" ]; then
     echo deleting branch $DELBRANCH
     # git push origin --delete $DELBRANCH
