@@ -23,4 +23,4 @@ if [ "$RESULT" ]; then
     curl -F file=@list.txt -F "initial_comment=Shakes the cat" -F channels=C0294EZMK9N -H "Authorization: Bearer ${BOT_TOKEN}" https://slack.com/api/files.upload
 fi
 
-curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World! $RESULT"}' ${SLACK_WEBHOOK}
+#curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World! $RESULT"}' ${SLACK_WEBHOOK}
