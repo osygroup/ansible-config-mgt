@@ -20,7 +20,7 @@ if [ "$RESULT" ]; then
     echo 'Kindly prune the following old branches (last commit date in bracket):'
     git for-each-ref --sort=-committerdate refs/remotes/ --format='%(refname:short) %(authorname) (%(committerdate:relative))' | grep -f prune.txt
     git for-each-ref --sort=-committerdate refs/remotes/ --format='%(refname:short) %(authorname) (%(committerdate:relative))' | grep -f prune.txt >> list.txt
-    curl -F file=@list.txt -F "initial_comment=Shakes the cat" -F channels=C0294EZMK9N -H "Authorization: Bearer ${BOT_TOKEN}" https://slack.com/api/files.upload
+    curl -F file=@list.txt -F "initial_comment=Hello Service-Transcode team, \nKindly prune the following old branches (last commit date in bracket):" -F channels=C0294EZMK9N -H "Authorization: Bearer ${BOT_TOKEN}" https://slack.com/api/files.upload
 fi
 
 #curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World! $RESULT"}' ${SLACK_WEBHOOK}
