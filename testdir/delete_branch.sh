@@ -21,4 +21,4 @@ if [ "$RESULT" ]; then
     git for-each-ref --sort=-committerdate refs/remotes/ --format='%(refname:short) %(authorname) (%(committerdate:relative))' | grep -f prune.txt
 fi
 
-curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World!"}' ${SLACK_WEBHOOK}
+curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World! $RESULT"}' ${SLACK_WEBHOOK}
