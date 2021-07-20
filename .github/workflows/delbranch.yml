@@ -6,6 +6,7 @@ on:
       
 env:
   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
 
 jobs:
   delete_merged_branches:
