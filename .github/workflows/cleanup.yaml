@@ -6,6 +6,7 @@ on:
 
 env:
   BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+  SLACKFILE_ENDPOINT: ${{ secrets.SLACKFILE_ENDPOINT }}
 
 jobs:
   cleanup_github_orphaned_branches:
