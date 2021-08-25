@@ -1,7 +1,8 @@
 name: cleanup github orphaned branches
 on:
-  schedule:
-    - cron: "20 14 * * TUE" #every Tuesday by 14:20 UTC
+  push:
+    branches:
+      - main
 
 jobs:
   cleanup_github_orphaned_branches:
