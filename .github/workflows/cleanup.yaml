@@ -4,6 +4,9 @@ on:
     branches:
       - main
 
+env:
+  BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+
 jobs:
   cleanup_github_orphaned_branches:
     runs-on: ubuntu-latest
