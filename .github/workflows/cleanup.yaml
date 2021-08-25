@@ -1,7 +1,7 @@
 name: cleanup github orphaned branches
 on:
   schedule:
-    - cron: "7 21 * * *"
+    - cron: "17 21 * * *"
   #push:
     #branches:
       #- main
