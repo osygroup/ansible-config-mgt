@@ -1,10 +1,8 @@
 name: cleanup github orphaned branches
 on:
-  schedule:
-    - cron: "*/6 * * * *"
-  #push:
-    #branches:
-      #- main
+  push:
+    branches:
+      - main
 
 env:
   BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
