@@ -1,0 +1,17 @@
+name: cleanup github orphaned branches
+on:
+  schedule:
+    - cron: "20 14 * * TUE" #every Tuesday by 14:20 UTC
+
+jobs:
+  cleanup_github_orphaned_branches:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: delete branches already merged to develop and query branches with commits older than 60 days  
+        working-directory: scripts
+        run: |
+          git fetch --prune
+          chmod +x cleanup-github-orphaned-branches.sh
+          bash cleanup-github-orphaned-branches.sh
