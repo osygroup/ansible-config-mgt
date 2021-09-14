@@ -1,9 +1,9 @@
 name: List objects in S3
 on:
-  workflow_dispatch
+  workflow_dispatch:
   push:
     branches:
-      - feature/TRANS-1251
+      - dynamic
 
 #env:
   #SERVICE_NAME: service-transcoder
@@ -17,7 +17,7 @@ on:
   #AWS_DEFAULT_REGION: us-east-1
 
 jobs:
-  cleanup_feature_terraform_STE_vault_builds:
+  list_objects_in_s3_bucket:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,12 +29,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_CI }}
           aws-region: us-east-1
 
-      - name: Assume Role
-        uses: youyo/awscredswrap@v1
-        with:
-          role_arn: ${{ secrets.TERRAFORM_STATE_ACCESS }}
-          duration_seconds: 3600
-          role_session_name: 'awscredswrap@GitHubActions'
+      #- name: Assume Role
+      #  uses: youyo/awscredswrap@v1
+      #  with:
+      #    role_arn: ${{ secrets.TERRAFORM_STATE_ACCESS }}
+      #    duration_seconds: 3600
+      #    role_session_name: 'awscredswrap@GitHubActions'
 
       - name: Cleanup feature terraform STE vault builds  
         run: |
