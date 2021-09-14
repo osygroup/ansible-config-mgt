@@ -36,7 +36,7 @@ jobs:
       #    duration_seconds: 3600
       #    role_session_name: 'awscredswrap@GitHubActions'
 
-      - name: Cleanup feature terraform STE vault builds  
+      - name: List objects in s3 bucket  
         run: |
           #aws s3 rm s3://plutotv-tf-state/transcode/us-east1 --recursive --exclude "ste/ste_vault/terraform.tfstate" --dryrun
           #aws s3 ls s3://plutotv-tf-state/transcode/us-east1
