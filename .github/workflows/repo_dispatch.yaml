@@ -1,9 +1,9 @@
 name: test repository dispatch
 on:
-  workflow_dispatch
-  #push:
-  #  branches:
-  #    - dynamic
+  workflow_dispatch:
+  push:
+    branches:
+      - feature-001
 
 jobs:
   test_repository_dispatch:
