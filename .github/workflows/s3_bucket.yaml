@@ -1,0 +1,43 @@
+name: List objects in S3
+on:
+  workflow_dispatch
+  push:
+    branches:
+      - feature/TRANS-1251
+
+#env:
+  #SERVICE_NAME: service-transcoder
+  #SERVICE_ENV: ste
+  #NAMESPACE_PREFIX: ste
+  #NAMESPACE_SUFFIX: transcode
+  #ENVIRONMENT: ste
+  #ECR_REPOSITORY: service-transcoder
+  #AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_CI }}
+  #AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_CI }}
+  #AWS_DEFAULT_REGION: us-east-1
+
+jobs:
+  cleanup_feature_terraform_STE_vault_builds:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Config AWS Creds
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_CI }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_CI }}
+          aws-region: us-east-1
+
+      - name: Assume Role
+        uses: youyo/awscredswrap@v1
+        with:
+          role_arn: ${{ secrets.TERRAFORM_STATE_ACCESS }}
+          duration_seconds: 3600
+          role_session_name: 'awscredswrap@GitHubActions'
+
+      - name: Cleanup feature terraform STE vault builds  
+        run: |
+          #aws s3 rm s3://plutotv-tf-state/transcode/us-east1 --recursive --exclude "ste/ste_vault/terraform.tfstate" --dryrun
+          #aws s3 ls s3://plutotv-tf-state/transcode/us-east1
+          aws s3 ls s3://plutotv-tf-state/transcode/us-east1/v2 --recursive
