@@ -1,0 +1,20 @@
+name: test repository dispatch
+on:
+  workflow_dispatch
+  #push:
+  #  branches:
+  #    - dynamic
+
+jobs:
+  test_repository_dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          event-type: my-event
+          client-payload: '{"ref": "dynamic", "sha": "${{ github.sha }}"}'
