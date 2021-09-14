@@ -1,11 +1,11 @@
 name: List objects in S3
 on:
-  #repository_dispatch:
-  #  types: [my-event]
-  workflow_dispatch
-  #push:
-  #  branches:
-  #    - dynamic
+  repository_dispatch:
+    types: [my-event]
+  workflow_dispatch:
+  push:
+    branches:
+      - dynamic
 
 jobs:
   list_objects_in_s3_bucket:
