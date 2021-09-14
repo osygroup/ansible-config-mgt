@@ -25,9 +25,9 @@ jobs:
       - name: Config AWS Creds
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_CI }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_CI }}
-          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          #aws-region: us-east-1
 
       #- name: Assume Role
       #  uses: youyo/awscredswrap@v1
@@ -40,4 +40,4 @@ jobs:
         run: |
           #aws s3 rm s3://plutotv-tf-state/transcode/us-east1 --recursive --exclude "ste/ste_vault/terraform.tfstate" --dryrun
           #aws s3 ls s3://plutotv-tf-state/transcode/us-east1
-          aws s3 ls s3://plutotv-tf-state/transcode/us-east1/v2 --recursive
+          aws s3 ls s3://oscorp --recursive
