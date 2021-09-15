@@ -28,4 +28,5 @@ jobs:
           #aws s3 rm s3://plutotv-tf-state/transcode/us-east1 --recursive --exclude "ste/ste_vault/terraform.tfstate" --dryrun
           #aws s3 ls s3://plutotv-tf-state/transcode/us-east1
           aws s3 ls s3://oscorp --recursive
-          echo ${{ github.event.client_payload.sha }} 
+          echo ${{ github.event.client_payload.sha }}
+          echo ${{ github.event.client_payload.myname }}
