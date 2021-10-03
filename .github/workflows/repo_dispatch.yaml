@@ -1,4 +1,4 @@
-name: test repository dispatch ${GITHUB_REF#refs/heads/}
+name: test repository dispatch
 on:
   workflow_dispatch:
   push:
