@@ -8,6 +8,7 @@ on:
 jobs:
   test_repository_dispatch:
     runs-on: ubuntu-latest
+    if: ${GITHUB_REF#refs/heads/} = 'feature-001'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
