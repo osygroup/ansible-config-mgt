@@ -30,3 +30,4 @@ jobs:
           aws s3 ls s3://oscorp --recursive
           echo ${{ github.event.client_payload.sha }}
           echo ${{ github.event.client_payload.myname }}
+          echo ${{ github.ref }}
