@@ -45,3 +45,4 @@ jobs:
           echo ${{ github.event.client_payload.myname }}
           echo ${{ github.ref }}
           echo ${{ steps.extract_branch.outputs.branch }}
+          echo $GITHUB_EVENT_PATH
