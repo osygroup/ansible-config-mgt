@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     #if: contains(github.ref, 'feature-')  #this job will run if the github ref contains 'feature-' in the name of the branch that triggers the workflow
     #if: github.ref == 'refs/heads/feature-001'   #this job will run if the name of the branch that triggers the workflow is equal to feature-001
-    #if: branch == 'feature-001' #
+    #if: branch == 'feature-001' 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
