@@ -46,3 +46,4 @@ jobs:
           echo ${{ github.ref }}
           echo ${{ steps.extract_branch.outputs.branch }}
           echo $GITHUB_EVENT_PATH
+          cat /home/runner/work/_temp/_github_workflow/event.json
