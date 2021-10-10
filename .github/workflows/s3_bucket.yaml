@@ -8,11 +8,6 @@ on:
     branches:
       - main
       - feature-001
-  pull_request:
-    types: [closed]
-    branches: 
-      - main
-      - feature-001
 
 jobs:
   list_objects_in_s3_bucket:
@@ -38,5 +33,6 @@ jobs:
           echo ${{ github.event.client_payload.sha }}
           echo ${{ github.event.client_payload.myname }}
           echo ${{ github.ref }}
-          echo ${{ github.head_ref }}
+          echo ${GITHUB_REF#refs/heads/}
+          echo ${{ github.event.client_payload.ref }}
           #cat /home/runner/work/_temp/_github_workflow/event.json
