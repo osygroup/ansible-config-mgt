@@ -1,8 +1,8 @@
   
 name: List objects in S3
 on:
-  #repository_dispatch:
-    #types: [my-event]
+  repository_dispatch:
+    types: [my-event]
   workflow_dispatch:
   push:
     branches:
