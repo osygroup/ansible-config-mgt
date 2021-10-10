@@ -24,6 +24,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           #aws-region: ${{ github.event.client_payload.region }} #eu-west-1
           aws-region: eu-west-1
+          
+      - name: Branch used
+        id: extract_branch
+        run: |
+          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+            echo "::set-output name=branch::$(echo ${GITHUB_REF##*/})"
+          elif [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+            echo "::set-output name=branch::$(echo $GITHUB_BASE_REF)"
+          else
+            echo "::set-output name=branch::INVALID_EVENT_BRANCH_UNKNOWN"
+          fi
 
       - name: List objects in s3 bucket  
         run: |
@@ -33,3 +44,4 @@ jobs:
           echo ${{ github.event.client_payload.sha }}
           echo ${{ github.event.client_payload.myname }}
           echo ${{ github.ref }}
+          echo ${{ steps.extract_branch.outputs.branch }}
