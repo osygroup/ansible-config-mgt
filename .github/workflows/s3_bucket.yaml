@@ -35,6 +35,5 @@ jobs:
           echo ${{ github.ref }}
           #echo ${GITHUB_REF#refs/heads/}
           echo ${{ github.event.client_payload.ref }}
-          #echo ${{ github.event.client_payload.ref#refs/heads/ }}
           echo ${{ github.event.client_payload.BRANCH }}
           #cat /home/runner/work/_temp/_github_workflow/event.json
