@@ -33,7 +33,7 @@ jobs:
           echo ${{ github.event.client_payload.sha }}
           echo ${{ github.event.client_payload.myname }}
           echo ${{ github.ref }}
-          echo ${GITHUB_REF#refs/heads/}
+          #echo ${GITHUB_REF#refs/heads/}
           echo ${{ github.event.client_payload.ref }}
           #echo ${{ github.event.client_payload.ref#refs/heads/ }}
           echo ${{ github.event.client_payload.BRANCH }}
