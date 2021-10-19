@@ -39,14 +39,14 @@ jobs:
           #cat /home/runner/work/_temp/_github_workflow/event.json
           
           cat >>secrets.tfvars<<END
-            hybrik_oapi_key    = "HYBRIK_OAPI_KEY"
-            hybrik_auth_key    = "HYBRIK_AUTH_KEY"
-            hybrik_oapi_secret = "HYBRIK_OAPI_SECRET"
-            hybrik_auth_secret = "HYBRIK_AUTH_SECRET"
-            s3_bucket_url      = "S3_BUCKET_URL"
-            db_username        = "DB_USER"
-            db_password        = "DB_PASSWORD"
-            db_database        = "DB_USER"
+          hybrik_oapi_key    = "HYBRIK_OAPI_KEY"
+          hybrik_auth_key    = "HYBRIK_AUTH_KEY"
+          hybrik_oapi_secret = "HYBRIK_OAPI_SECRET"
+          hybrik_auth_secret = "HYBRIK_AUTH_SECRET"
+          s3_bucket_url      = "S3_BUCKET_URL"
+          db_username        = "DB_USER"
+          db_password        = "DB_PASSWORD"
+          db_database        = "DB_USER"
           END
           
           #if [[ ${{ github.event.client_payload.BRANCH }} = "feature-001" ]]
