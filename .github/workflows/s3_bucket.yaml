@@ -50,7 +50,7 @@ jobs:
           END
           
           #if [[ ${{ github.event.client_payload.BRANCH }} = "feature-001" ]]
-          if [[ ${{ github.event.client_payload.BRANCH }} = "feature-004" ]]
+          if [[ ${{ github.event.client_payload.BRANCH }} = "feature-004" ]];
           then
             echo ENVIRONMENT=dev >> $GITHUB_ENV
             cat >>secrets.tfvars<<-END
