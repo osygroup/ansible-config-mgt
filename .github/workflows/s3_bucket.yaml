@@ -49,20 +49,18 @@ jobs:
           db_database        = "DB_USER"
           END
           
-          sudo apt install dos2unix -y
-          
           #if [[ ${{ github.event.client_payload.BRANCH }} = "feature-001" ]]
-          if [[ ${{ github.event.client_payload.BRANCH }} = "feature-004" ]]
+          if [[ ${{ github.event.client_payload.BRANCH }} = "feature-004" ]];
           then
-            echo ENVIRONMENT=dev >> $GITHUB_ENV
+            echo ENVIRONMENT=dev >> $GITHUB_ENV;
             cat >>secrets.tfvars<<END
-            vault_token        = "VAULT_TOKEN_NONPROD_RW"
-            vault_address      = "VAULT_ADDRESS_NONPROD"
+            vault_token        = "VAULT_TOKEN_NONPROD_RW";
+            vault_address      = "VAULT_ADDRESS_NONPROD";
           else
-            echo ENVIRONMENT=preprod >> $GITHUB_ENV
+            echo ENVIRONMENT=preprod >> $GITHUB_ENV;
             cat >>secrets.tfvars<<END
-            vault_token        = "VAULT_TOKEN_PREPROD_RW"
-            vault_address      = "VAULT_ADDRESS_PREPROD"
+            vault_token        = "VAULT_TOKEN_PREPROD_RW";
+            vault_address      = "VAULT_ADDRESS_PREPROD";
           fi
           END
           
