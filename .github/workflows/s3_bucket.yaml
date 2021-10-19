@@ -3,11 +3,11 @@ name: List objects in S3
 on:
   repository_dispatch:
     types: [my-event]
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-      - feature-001
+  #workflow_dispatch:
+  #push:
+    #branches:
+      #- main
+      #- feature-001
 
 jobs:
   list_objects_in_s3_bucket:
@@ -38,17 +38,28 @@ jobs:
           echo ${{ github.event.client_payload.BRANCH }}
           #cat /home/runner/work/_temp/_github_workflow/event.json
           
+          cat >>secrets.tfvars<<"END"
+          hybrik_oapi_key    = "${{ secrets.HYBRIK_OAPI_KEY }}"
+          hybrik_auth_key    = "${{ secrets.HYBRIK_AUTH_KEY }}"
+          hybrik_oapi_secret = "${{ secrets.HYBRIK_OAPI_SECRET }}"
+          hybrik_auth_secret = "${{ secrets.HYBRIK_AUTH_SECRET }}"
+          s3_bucket_url      = "${{ secrets.S3_BUCKET_URL }}"
+          db_username        = "${{ secrets.DB_USER }}"
+          db_password        = "${{ secrets.DB_PASSWORD }}"
+          db_database        = "${{ secrets.DB_USER }}"
+          END
+          
           #if [[ ${{ github.event.client_payload.BRANCH }} = "feature-001" ]]
           if [[ ${{ github.event.client_payload.BRANCH }} = "feature-004" ]]
           then
             echo ENVIRONMENT=dev >> $GITHUB_ENV
-            cat >>secrets.tfvars<<END
+            cat >>secrets.tfvars<<"END"
             vault_token        = "${{ secrets.VAULT_TOKEN_NONPROD_RW }}"
             vault_address      = "${{ secrets.VAULT_ADDRESS_NONPROD }}"
             END
           else
             echo ENVIRONMENT=preprod >> $GITHUB_ENV
-            cat >>secrets.tfvars<<END
+            cat >>secrets.tfvars<<"END"
             vault_token        = "${{ secrets.VAULT_TOKEN_PREPROD_RW }}"
             vault_address      = "${{ secrets.VAULT_ADDRESS_PREPROD }}"
             END
