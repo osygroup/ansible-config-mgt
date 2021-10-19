@@ -46,5 +46,10 @@ jobs:
             eho ENVIRONMENT=preprod >> $GITHUB_ENV
           fi
           
-          echo ${{ env.ENVIRONMENT }}
 
+      - name: Repository Dispatch testin
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          event-type: my-event
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "myname": "ERNESTO", "ENV": "${{ env.ENVIRONMENT }}"}'
