@@ -38,7 +38,7 @@ jobs:
           echo ${{ github.event.client_payload.BRANCH }}
           #cat /home/runner/work/_temp/_github_workflow/event.json
           
-          cat >>secrets.tfvars<<END
+          cat >>secrets.tfvars<<"END"
           hybrik_oapi_key    = "HYBRIK_OAPI_KEY"
           hybrik_auth_key    = "HYBRIK_AUTH_KEY"
           hybrik_oapi_secret = "HYBRIK_OAPI_SECRET"
