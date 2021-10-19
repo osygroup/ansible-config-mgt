@@ -39,7 +39,7 @@ jobs:
           #cat /home/runner/work/_temp/_github_workflow/event.json
           
           #if [[ ${{ github.event.client_payload.BRANCH }} = "feature-001" ]]
-          if [[ ${{ github.event.client_payload.BRANCH }} = "feature-001" ]]
+          if [[ ${{ github.event.client_payload.BRANCH }} = "feature-004" ]]
           then
             echo ENVIRONMENT=dev >> $GITHUB_ENV
           else
