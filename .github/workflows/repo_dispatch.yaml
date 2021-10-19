@@ -22,7 +22,6 @@ jobs:
         
       - run: |
           echo ENV=preprod >> $GITHUB_ENV
-          ${{ env.ENV }}
 
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
