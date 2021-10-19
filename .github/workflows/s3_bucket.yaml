@@ -53,16 +53,17 @@ jobs:
           if [[ ${{ github.event.client_payload.BRANCH }} = "feature-004" ]]
           then
             echo ENVIRONMENT=dev >> $GITHUB_ENV
-            cat >>secrets.tfvars<<END
+            cat >>secrets.tfvars<<-END
             vault_token        = "VAULT_TOKEN_NONPROD_RW"
             vault_address      = "VAULT_ADDRESS_NONPROD"
+            END
           else
             echo ENVIRONMENT=preprod >> $GITHUB_ENV
-            cat >>secrets.tfvars<<END
+            cat >>secrets.tfvars<<-END
             vault_token        = "VAULT_TOKEN_PREPROD_RW"
             vault_address      = "VAULT_ADDRESS_PREPROD"
+            END
           fi
-          END
           
           cat secrets.tfvars
           
