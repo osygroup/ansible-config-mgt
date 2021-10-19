@@ -49,6 +49,8 @@ jobs:
           db_database        = "DB_USER"
           END
           
+          apt install dos2unix -y
+          
           #if [[ ${{ github.event.client_payload.BRANCH }} = "feature-001" ]]
           if [[ ${{ github.event.client_payload.BRANCH }} = "feature-004" ]]
           then
@@ -62,7 +64,7 @@ jobs:
             vault_token        = "VAULT_TOKEN_PREPROD_RW"
             vault_address      = "VAULT_ADDRESS_PREPROD"
           fi
-          END;
+          END
           
           cat secrets.tfvars
           
