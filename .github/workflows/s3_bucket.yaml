@@ -38,7 +38,7 @@ jobs:
           echo ${{ github.event.client_payload.BRANCH }}
           #cat /home/runner/work/_temp/_github_workflow/event.json
           
-          cat >>secrets.tfvars<<'END'
+          cat >>secrets.tfvars<<END
           hybrik_oapi_key    = "HYBRIK_OAPI_KEY"
           hybrik_auth_key    = "HYBRIK_AUTH_KEY"
           hybrik_oapi_secret = "HYBRIK_OAPI_SECRET"
@@ -53,13 +53,13 @@ jobs:
           if [[ ${{ github.event.client_payload.BRANCH }} = "feature-004" ]]
           then
             echo ENVIRONMENT=dev >> $GITHUB_ENV
-            cat >>secrets.tfvars<<'END'
+            cat >>secrets.tfvars<<END
             vault_token        = "VAULT_TOKEN_NONPROD_RW"
             vault_address      = "VAULT_ADDRESS_NONPROD"
             END
           else
             echo ENVIRONMENT=preprod >> $GITHUB_ENV
-            cat >>secrets.tfvars<<'END'
+            cat >>secrets.tfvars<<END
             vault_token        = "VAULT_TOKEN_PREPROD_RW"
             vault_address      = "VAULT_ADDRESS_PREPROD"
             END
