@@ -43,7 +43,7 @@ jobs:
           then
             echo ENVIRONMENT=dev >> $GITHUB_ENV
           else
-            eho ENVIRONMENT=preprod >> $GITHUB_ENV
+            echo ENVIRONMENT=preprod >> $GITHUB_ENV
           fi
           
 
