@@ -62,7 +62,7 @@ jobs:
             vault_token        = "VAULT_TOKEN_PREPROD_RW";
             vault_address      = "VAULT_ADDRESS_PREPROD";
           fi;
-          END
+          END;
           
           cat secrets.tfvars
           
